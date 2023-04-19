@@ -1,0 +1,8 @@
+[alias]
+	list-alias = "!git config --list | grep alias | cut -c 7-"
+	st = status
+	co = checkout
+	br = branch
+	delete-features = "!git br | grep 'feature/' | xargs git br -D"
+[init]
+    defaultBranch = main
