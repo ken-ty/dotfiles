@@ -2,9 +2,14 @@
 
 TODO: ここに 概要 を記載する.
 
-## リポジトリの利用方法
+## Usage
 
-TODO: ここに 利用方法 を記載する.
+以下を実行する
+
+```
+bash -c "$( curl -fsSL https://raw.github.com/ken-ty/dotfiles/master/install.sh )"
+```
+
 TODO: 各ファイルの機能や使用方法についてのドキュメントも作成する.
 
 ## 更新履歴
