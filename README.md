@@ -12,11 +12,12 @@ bash -c "$( curl -fsSL https://raw.github.com/ken-ty/dotfiles/master/install.sh 
 
 TODO: 各ファイルの機能や使用方法についてのドキュメントも作成する.
 
-## 更新履歴
+## 登録方法
 
-TODO: ここに 更新履歴 を記載する.
-TODO: CHANGELOG を作成する.
-      バージョン管理は git commitizen に則った commit message から自動生成したい.
+```
+mkdir ~/backup &&  mv ~/.zshrc ~/backup/.zshrc # バックアップ
+ln -s $(pwd)/.zshrc ~ # シンボリックリンク
+```
 
 ## 貢献方法
 
