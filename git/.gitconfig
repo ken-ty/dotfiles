@@ -3,6 +3,8 @@
 	st = status
 	co = checkout
 	br = branch
-	delete-features = "!git br | grep 'feature/' | xargs git br -D"
+	cz = "git-cz" # https://github.com/streamich/git-cz で 統一した commit メッセージで commit を作成する.
+	delete-features = "!git br | grep 'feature/' | xargs git br -D" # 今いるブランチ以外の feature ブランチを全部削除する.
+
 [init]
     defaultBranch = main
