@@ -10,6 +10,7 @@ ENABLE_PERFORMANCE_MEASUREMENT='TRUE' # 'TRUE' || 'FALSE'
 
 # 環境変数を設定 ここから {{{
   export LANG=ja_JP.UTF-8 # 言語は日本語を選択
+  export EDITOR='vim' # エディタは vim を選択
 # }}} 環境変数を設定 ここまで
 
 # 履歴を設定 ここから {{{
