@@ -16,7 +16,7 @@ TODO: 各ファイルの機能や使用方法についてのドキュメント�
 
 ```
 mkdir ~/backup &&  mv ~/.zshrc ~/backup/.zshrc # バックアップ
-ln -s $(pwd)/.zshrc ~ # シンボリックリンク
+ln -s $(pwd)/.zshrc $HOME/.zshrc # シンボリックリンク
 source ~/.zshrc # 再読み込み
 ```
 
