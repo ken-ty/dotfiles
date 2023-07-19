@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eu # エラーが発生した場合や未定義の変数が使用された場合にスクリプトの実行を終了する
 
 # 変数 ここから {{{
     DOT_DIR="$HOME/dotfiles" # dotfile を 格納するディレクトリ
@@ -9,6 +10,20 @@
     # コマンドが存在するかチェック
     has() {
         type "$1" > /dev/null 2>&1
+    }
+
+    # セットアップを実行するかどうかユーザーに入力させる
+    is_setup() {
+        echo "Do you setup $1? [y/N]"
+        while :
+        do
+            read -r answer
+            case $answer in
+            'yes' | 'y') return 0 ;;
+            [nN]o | [nN]) return 1 ;;
+            *) echo "Try again because you input incorrect letter. Do you setup $1? [y/N]" ;;
+            esac
+        done
     }
 
     # エラー終了する
@@ -47,15 +62,16 @@
 # }}} dotfiles のダウンロード ここまで
 
 # dotfile のリンク作成 ここから {{{
-echo -e "\ndotfiles のリンクを作成します."
-for file in .zshrc; do
-    
-    echo -e "\n$file のリンクを作成します."
+    echo -e "\ndotfiles のリンクを作成します."
+    for file in .zshrc; do
+        if is_setup "$file"; then
+            echo -e "\n$file のリンクを作成します."
 
-    [ -e $HOME/$file ] && mv "$HOME/$file" "$BACKUP_DIR/$file" # バックアップ
+            [ -e $HOME/$file ] && mv "$HOME/$file" "$BACKUP_DIR/$file" # バックアップ
 
-    ln -sf "$DOT_DIR/$file" "$HOME/$file" # リンク作成
-    echo "$file のリンクを作成しました."
-done
-echo -e "\ndotfiles のリンクを作成しました."
+            ln -sf "$DOT_DIR/$file" "$HOME/$file" # リンク作成
+            echo "$file のリンクを作成しました."
+        fi
+    done
+    echo -e "\ndotfiles のリンクを作成しました."
 # }}} dotfiles のリンク作成 ここまで
