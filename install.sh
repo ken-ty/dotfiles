@@ -28,10 +28,10 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
 
     # エラー終了する
     # 
-    # Usage: error $summary $discription
+    # Usage: error $id $summary $discription
     error() {
-        echo -e "\nERROR: $1\n"
-        echo -e $2
+        echo -e "\nE($1): $2\n"
+        echo -e $3
         exit 1
     }
 # }}} 関数宣言 ここまで
@@ -57,7 +57,7 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
         mv -f dotfiles-main $DOT_DIR
         echo "dotfiles をダウンロードしました."
     else
-        error "dotfiles already exists!" "you should backup \"\$HOME/dotfiles\" and execute delete command \"rm -rf \$HOME/dotfiles\""
+        error "0101" "dotfiles already exists!" "you should backup \"\$HOME/dotfiles\" and execute delete command \"rm -rf \$HOME/dotfiles\""
     fi
 # }}} dotfiles のダウンロード ここまで
 
