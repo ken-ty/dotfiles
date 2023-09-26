@@ -20,13 +20,17 @@ source $HOME/.zshrc # zshrc の再読み込み
 
 ## 貢献方法
 
-fork して開発し, PR 経由でマージします. 
-マージ前に, ローカルで最新のmasterを取り込んで rebase してください.
+- issue の作成
+- コードの修正/追加
 
-issue 単位で作業してほしいです. issue が大きい場合, より小さな task へと分割します.
-分割方法などは 検討中です.
+###  issue の作成
 
-TODO: 貢献方法 の検証を行う.
+不具合や改善案を issue として追加下さい.
+
+### コードの修正/追加
+
+下記の"フォークと pull request" のワークフローに従って PR をください.
+https://docs.github.com/ja/get-started/quickstart/contributing-to-projects#about-forking
 
 ## ライセンス
 
