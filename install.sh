@@ -97,7 +97,7 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
         [ -e $dist ] && mv "$dist" "$BACKUP_DIR/vscode/settings.json" # バックアップ
 
         ln -sf "$src" "$dist"  # リンク作成
-        echo "$file のリンクを作成しました."
+        echo "$display_name のリンクを作成しました."
     fi
 
     echo -e "\ndotfiles のリンクを作成しました."
