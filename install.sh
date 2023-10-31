@@ -73,7 +73,10 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
 
 # dotfile のリンク作成 ここから {{{
     echo -e "\ndotfiles のリンクを作成します."
-    for file in .zshrc; do
+
+    # $HOME にリンクを作成するitem
+    home_files=(".zshrc")
+    for file in "${home_files[@]}" ; do
         if is_setup "$file"; then
             echo -e "\n$file のリンクを作成します."
 
@@ -83,5 +86,19 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
             echo "$file のリンクを作成しました."
         fi
     done
+
+    # vscode の settings.json
+    display_name="vscode > settings.json"
+    src="$DOT_DIR/vscode/settings.json"
+    dist="$HOME/Library/Application Support/Code/User/settings.json"
+    if is_setup "$display_name"; then
+        echo -e "\n$display_name のリンクを作成します."
+
+        [ -e $dist ] && mv "$dist" "$BACKUP_DIR/vscode/settings.json" # バックアップ
+
+        ln -sf "$src" "$dist"  # リンク作成
+        echo "$file のリンクを作成しました."
+    fi
+
     echo -e "\ndotfiles のリンクを作成しました."
 # }}} dotfiles のリンク作成 ここまで
