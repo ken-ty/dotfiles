@@ -119,6 +119,16 @@
     "editor.suggest.snippetsPreventQuickSuggestions": false
   },
   // ここはプロジェクトのワークスペースのsettings.json毎に設定する
+  // fvm を利用するなら以下をコピーして設定する
+  // ```
+  // "dart.flutterSdkPath": ".fvm/flutter_sdk",
+  // "search.exclude": {
+  //   "**/.fvm/flutter_sdk/": true
+  // },
+  // "files.watcherExclude": {
+  //   "**/.fvm/flutter_sdk/": true
+  // }
+  // ```
   "dart.flutterSdkPath": null,
   // vscode が自動実行する pub get を無効化する
   "dart.runPubGetOnPubspecChanges": "never",
