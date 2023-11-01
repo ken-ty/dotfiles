@@ -94,7 +94,7 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
     if is_setup "$display_name"; then
         echo -e "\n$display_name のリンクを作成します."
 
-        [ -e "$dist" ] && mv "$dist" "$BACKUP_DIR/vscode/settings.json" # バックアップ
+        [ -e "$dist" ] && mv -p "$dist" "$BACKUP_DIR/vscode/settings.json" # バックアップ
 
         ln -sf "$src" "$dist"  # リンク作成
         echo "$display_name のリンクを作成しました."
