@@ -1,7 +1,14 @@
 // このファイルは ~/Library/Application Support/Code/User/settings.json に配置してください。
 // vscode の設定は https://code.visualstudio.com/docs/getstarted/settings に記載されています。
 {
-  // 共通の設定 ここから {
+  // いつデバッグビューを開くか。都度開くの面倒なので、実行時に開く。
+  "debug.openDebug": "openOnSessionStart",
+  // デバッグ中に行内に変数値を表示
+  "debug.inlineValues": true,
+  // テキストコピー時に書式設定を含めない
+  "editor.copyWithSyntaxHighlighting": false,
+  // POSIXに従い、ファイル保存時に行末に改行を挿入する
+  "files.insertFinalNewline": true,
   // updated 2023-10-26 17:56
   // https://github.com/antfu/vscode-file-nesting-config
   "explorer.fileNesting.enabled": true,
@@ -84,24 +91,36 @@
   },
   // Dart Code の設定は https://dartcode.org/docs/settings/ に記載されています。
   "[dart]": {
-    "editor.bracketPairColorization.enabled": true,
-    "editor.codeActionsOnSave": {
-      "source.fixAll": true,
-      "source.organizeImports": true
-    },
+    // オススメにのっとる https://dartcode.org/docs/recommended-settings/ ここから {
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
-    "editor.guides.bracketPairs": true,
     "editor.rulers": [
       80
     ],
     "editor.selectionHighlight": false,
-    "editor.suggest.snippetsPreventQuickSuggestions": false,
     "editor.suggestSelection": "first",
     "editor.tabCompletion": "onlySnippets",
-    "editor.wordBasedSuggestions": false
+    "editor.wordBasedSuggestions": false,
+    // } オススメにのっとる ここまで 
+    // 括弧の色をいい感じにする
+    "editor.bracketPairColorization.enabled": true,
+    // 保存時に実行するアクション
+    "editor.codeActionsOnSave": {
+      // 開発者が考える必要のないコード修正を自動で実行する
+      "source.fixAll": true,
+      // インポートを自動で整理する https://dart.dev/effective-dart/style#ordering にのっとる
+      "source.organizeImports": true
+    },
+    // ブラケットのペアを強調表示する
+    "editor.guides.bracketPairs": true,
+    // ツリー構造のガイドを表示する
+    "dart.previewFlutterUiGuides": true,
+    // タブストップ中にも入力補完を有効にする
+    "editor.suggest.snippetsPreventQuickSuggestions": false
   },
+  // ここはプロジェクトのワークスペースのsettings.json毎に設定する
   "dart.flutterSdkPath": null,
+  // vscode が自動実行する pub get を無効化する
   "dart.runPubGetOnPubspecChanges": "never",
   "[javascript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
