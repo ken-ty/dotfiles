@@ -1,7 +1,6 @@
 // このファイルは ~/Library/Application Support/Code/User/settings.json に配置してください。
 // vscode の設定は https://code.visualstudio.com/docs/getstarted/settings に記載されています。
 {
-  // 共通の設定 ここから {
   // updated 2023-10-26 17:56
   // https://github.com/antfu/vscode-file-nesting-config
   "explorer.fileNesting.enabled": true,
