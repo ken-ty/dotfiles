@@ -4,7 +4,7 @@
   // いつデバッグビューを開くか。都度開くの面倒なので、実行時に開く。
   "debug.openDebug": "openOnSessionStart",
   // デバッグ中に行内に変数値を表示
-  "debug.inlineValues": true,
+  "debug.inlineValues": "on",
   // テキストコピー時に書式設定を含めない
   "editor.copyWithSyntaxHighlighting": false,
   // POSIXに従い、ファイル保存時に行末に改行を挿入する
