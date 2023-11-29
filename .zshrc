@@ -1,11 +1,10 @@
+# Fig pre block. Keep at the top of this file.
+[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # パフォーマンスチューニング有効化するかどうか
 ENABLE_PERFORMANCE_MEASUREMENT='TRUE' # 'TRUE' || 'FALSE'
 
 # パフォーマンス計測 開始
 [ $ENABLE_PERFORMANCE_MEASUREMENT = 'TRUE' ] && zmodload zsh/zprof
-
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 
 
 # 環境変数を設定 ここから {{{
@@ -131,8 +130,8 @@ ENABLE_PERFORMANCE_MEASUREMENT='TRUE' # 'TRUE' || 'FALSE'
   }
 # }}}  zsh 終了時に呼び出す関数を登録する ここまで
 
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
-
 # パフォーマンス計測 終了
 [ $ENABLE_PERFORMANCE_MEASUREMENT = 'TRUE' ] && zprof
+
+# Fig post block. Keep at the bottom of this file.
+[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"
