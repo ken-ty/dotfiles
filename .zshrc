@@ -33,6 +33,9 @@ ENABLE_PERFORMANCE_MEASUREMENT='TRUE' # 'TRUE' || 'FALSE'
   # export PATH="$PATH:/Users/apple/develop/flutter/bin"
   # # fvm
   # export PATH="$PATH:$HOME/.pub-cache/bin"
+  # asdf-flutter の為に FLUTTER_ROOT を設定する
+  # @see https://github.com/oae/asdf-flutter の README
+  export FLUTTER_ROOT="$(asdf where flutter)"
 
   # # android path 追加
   # export PATH=$PATH:/Users/apple/Library/Android/sdk/platform-tools
