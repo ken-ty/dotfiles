@@ -31,8 +31,9 @@ ENABLE_PERFORMANCE_MEASUREMENT='TRUE' # 'TRUE' || 'FALSE'
   source $HOME/.asdf/asdf.sh # asdf 読み込む
   # # Flutter の パス通す
   # export PATH="$PATH:/Users/apple/develop/flutter/bin"
-  # # fvm
-  # export PATH="$PATH:$HOME/.pub-cache/bin"
+  # `dart pub global activate xxx` でインストールしたコマンドを使えるようにする.
+  # fvm や、 flutterfire の為に必要
+  export PATH="$PATH":"$HOME/.pub-cache/bin"
   # asdf-flutter の為に FLUTTER_ROOT を設定する
   # @see https://github.com/oae/asdf-flutter の README
   export FLUTTER_ROOT="$(asdf where flutter)"
