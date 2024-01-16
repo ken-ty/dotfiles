@@ -12,8 +12,7 @@ $HOME 配下に格納される 設定ファイル群 の git 管理。
 | .zshrc | zsh の設定 |
 | .gitconfig | git の設定 |
 | vscode/settings.json | vscode の User 設定 |
-
-
+| .tool-versions | asdf 管理している各ツールのglobalバージョン |
 
 ## Usage
 
