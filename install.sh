@@ -102,7 +102,7 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
 
     # asdf の 設定ファイル
     display_name="asdf > .tool-versions"
-    src="$DOT_DIR/asdf/tool-versions"
+    src="$DOT_DIR/asdf/.tool-versions"
     dist="$HOME/.tool-versions"
     if is_setup "$display_name"; then
         echo -e "\n$display_name のリンクを作成します."
