@@ -133,7 +133,7 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
 
     # vscode の extention
     # 以下を実行すると vscode/my_vscode_extensions.sh が生成される
-    # code --list-extensions | sed -e 's/^/code --install-extension /' > my_vscode_extensions.sh
+    # code --list-extensions --show-versions | sed -e 's/^/code --install-extension /' > my_vscode_extensions.sh
     display_name="vscode > my_vscode_extensions.sh"
     if is_setup "$display_name"; then
         echo -e "\n$display_name を実行して拡張をインポートします."
