@@ -1,5 +1,7 @@
-// このファイルは ~/Library/Application Support/Code/User/settings.json に配置してください。
-// vscode の設定は https://code.visualstudio.com/docs/getstarted/settings に記載されています。
+// ファイルの配置場所は以下を参照:
+// https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
+// vscode の各種設定は以下を参照:
+// https://code.visualstudio.com/docs/getstarted/settings
 {
   // いつデバッグビューを開くか。都度開くの面倒なので、実行時に開く。
   "debug.openDebug": "openOnSessionStart",
@@ -7,9 +9,9 @@
   "debug.inlineValues": "on",
   // テキストコピー時に書式設定を含めない
   "editor.copyWithSyntaxHighlighting": false,
-  // POSIXに従い、ファイル保存時に行末に改行を挿入する
+  // POSIXに従い、ファイル保存時に行末に改行を挿入。
   "files.insertFinalNewline": true,
-  // updated 2023-10-26 17:56
+  // ファイルツリーで関連ファイルをまとめる
   // https://github.com/antfu/vscode-file-nesting-config
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.expand": false,
@@ -89,9 +91,11 @@
     "vite.config.*": "*.env, .babelrc*, .codecov, .cssnanorc*, .env.*, .envrc, .htmlnanorc*, .lighthouserc.*, .mocha*, .postcssrc*, .terserrc*, api-extractor.json, ava.config.*, babel.config.*, contentlayer.config.*, cssnano.config.*, cypress.*, env.d.ts, formkit.config.*, formulate.config.*, histoire.config.*, htmlnanorc.*, i18n.config.*, jasmine.*, jest.config.*, jsconfig.*, karma*, lighthouserc.*, playwright.config.*, postcss.config.*, puppeteer.config.*, rspack.config.*, svgo.config.*, tailwind.config.*, tsconfig.*, tsdoc.*, uno.config.*, unocss.config.*, vitest.config.*, vuetify.config.*, webpack.config.*, windi.config.*",
     "vue.config.*": "*.env, .babelrc*, .codecov, .cssnanorc*, .env.*, .envrc, .htmlnanorc*, .lighthouserc.*, .mocha*, .postcssrc*, .terserrc*, api-extractor.json, ava.config.*, babel.config.*, contentlayer.config.*, cssnano.config.*, cypress.*, env.d.ts, formkit.config.*, formulate.config.*, histoire.config.*, htmlnanorc.*, i18n.config.*, jasmine.*, jest.config.*, jsconfig.*, karma*, lighthouserc.*, playwright.config.*, postcss.config.*, puppeteer.config.*, rspack.config.*, svgo.config.*, tailwind.config.*, tsconfig.*, tsdoc.*, uno.config.*, unocss.config.*, vitest.config.*, vuetify.config.*, webpack.config.*, windi.config.*"
   },
-  // Dart Code の設定は https://dartcode.org/docs/settings/ に記載されています。
+  // Dart Code の設定は以下を参照:
+  // https://dartcode.org/docs/settings/
   "[dart]": {
-    // オススメにのっとる https://dartcode.org/docs/recommended-settings/ ここから {
+    // オススメにのっとる ここから {
+    // オススメ: https://dartcode.org/docs/recommended-settings/ 
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
     "editor.rulers": [
@@ -129,17 +133,21 @@
   //   "**/.fvm/flutter_sdk/": true
   // }
   // ```
+  // asdf で管理するなら指定しなくて良い
   "dart.flutterSdkPath": null,
-  // vscode が自動実行する pub get を無効化する
+  // vscode の pub get 自動実行を無効化する
   "dart.runPubGetOnPubspecChanges": "never",
+  // js のフォーマッターの指定
   "[javascript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
   },
+  // json のフォーマッターの指定
   "[json][jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features",
     "editor.insertSpaces": true,
     "editor.tabSize": 2
   },
+  // スペルチェッカーのホワイトリスト
   "cSpell.userWords": [
     "ABCDEFGHIJKLMNOPQRSTUVXYZ",
     "checkerboarding",
@@ -150,15 +158,20 @@
     "Subtags",
     "dotfiles"
   ],
+  // 差分エディタに 行頭/行末 の空白の変更を無視させない
   "diffEditor.ignoreTrimWhitespace": false,
+  // vscodeのスクリーンリーダーを無効化する
   "editor.accessibilitySupport": "off",
+  // 定期的に自動fetchする
   "git.autofetch": true,
+  // copilot の有効/無効設定
   "github.copilot.enable": {
     "*": true,
     "markdown": true,
     "plaintext": false,
     "scminput": false
   },
+  // gitlens の設定
   "gitlens.codeLens.enabled": false,
   "gitlens.currentLine.format": "${author, }${agoOrDateShort}${' via 'pullRequest}${ • message|100?}",
   "gitlens.defaultDateFormat": "YYYY/MM/DD/ a hh:mm",
@@ -211,13 +224,23 @@
   "gitlens.views.commits.showBranchComparison": "branch",
   "gitlens.views.formats.commits.label": "${❰ tips ❱➤  }${pullRequest }${message}",
   "gitlens.views.searchAndCompare.files.layout": "tree",
+  // Svelte for VS Code の設定
   "svelte.enable-ts-plugin": true,
+  // SVG Previewer の設定
   "svg.preview.mode": "svg",
+  // ターミナルの設定
   "terminal.integrated.env.osx": {
     "FIG_NEW_SESSION": "1"
   },
+  // ログインシェルを開かないようにする。通常のターミナルと異なる挙動を防ぐ。
+  // https://code.visualstudio.com/docs/terminal/advanced#_environment-inheritance
+  "terminal.integrated.inheritEnv": false,
+  // 新バージョンのメッセージを非表示にする
   "vsicons.dontShowNewVersionMessage": true,
+  // vscode のウィンドウ倍率は 100%
   "window.zoomLevel": 0,
+  // アイコンを設定する
   "workbench.iconTheme": "material-icon-theme",
+  // vscode 起動直後に何も開かない
   "workbench.startupEditor": "none"
 }
