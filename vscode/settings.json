@@ -232,6 +232,9 @@
   "terminal.integrated.env.osx": {
     "FIG_NEW_SESSION": "1"
   },
+  // ログインシェルを開かないようにする。通常のターミナルと異なる挙動を防ぐ。
+  // https://code.visualstudio.com/docs/terminal/advanced#_environment-inheritance
+  "terminal.integrated.inheritEnv": false,
   // 新バージョンのメッセージを非表示にする
   "vsicons.dontShowNewVersionMessage": true,
   // vscode のウィンドウ倍率は 100%
