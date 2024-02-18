@@ -19,7 +19,7 @@ $HOME 配下に格納される 設定ファイル群 の git 管理。
 以下を実行する
 
 ```
-bash -c "$( curl -fsSL https://raw.github.com/ken-ty/dotfiles/master/install.sh )"
+bash -c "$( curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh )"
 ```
 
 TODO: 各ファイルの機能や使用方法についてのドキュメントも作成する。
