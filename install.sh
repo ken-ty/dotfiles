@@ -44,6 +44,30 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
         echo -e $3
         exit 1
     }
+
+    # 判定したOS名を返す
+    get_os_name() {
+        declare OS="unsupported os"
+        if [ "$(uname)" == 'Darwin' ]; then
+        return 1
+        OS='Mac'
+        elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
+        RELEASE_FILE=/etc/os-release
+        if grep '^NAME="Ubuntu' "${RELEASE_FILE}" >/dev/null; then
+        OS=Ubuntu
+        else
+            echo "Your platform is not supported."
+            uname -a
+            return 1
+        fi
+        else
+        echo "Your platform is not supported."
+        uname -a
+        return 1
+        fi
+
+        echo $OS
+    }
 # }}} 関数宣言 ここまで
 
 # バックアップファイルを作成する ここから {{{
@@ -90,7 +114,14 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
     # vscode の settings.json
     display_name="vscode > settings.json"
     src="$DOT_DIR/vscode/settings.json"
-    dist="$HOME/Library/Application Support/Code/User/settings.json"
+    dist="" # see: https://code.visualstudio.com/docs/getstarted/settings#_settings-file-locations
+    if [ "$(get_os_name)" == "Mac" ]; then
+        dist="$HOME/Library/Application Support/Code/User/settings.json"
+    elif [ "$(get_os_name)" == "Ubuntu" ]; then
+        dist="$HOME/.config/Code/User/settings.json"
+    else
+        error "0102" "Unsupported OS" "Your platform is not supported."
+    fi
     if is_setup "$display_name"; then
         echo -e "\n$display_name のリンクを作成します."
 
