@@ -49,21 +49,20 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
     get_os_name() {
         declare OS="unsupported os"
         if [ "$(uname)" == 'Darwin' ]; then
-        return 1
-        OS='Mac'
+            OS='Mac'
         elif [ "$(expr substr $(uname -s) 1 5)" == 'Linux' ]; then
-        RELEASE_FILE=/etc/os-release
-        if grep '^NAME="Ubuntu' "${RELEASE_FILE}" >/dev/null; then
-        OS=Ubuntu
+            RELEASE_FILE=/etc/os-release
+            if grep '^NAME="Ubuntu' "${RELEASE_FILE}" >/dev/null; then
+                OS=Ubuntu
+            else
+                echo "Your platform is not supported."
+                uname -a
+                return 1
+            fi
         else
             echo "Your platform is not supported."
             uname -a
             return 1
-        fi
-        else
-        echo "Your platform is not supported."
-        uname -a
-        return 1
         fi
 
         echo $OS
@@ -120,7 +119,7 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
     elif [ "$(get_os_name)" == "Ubuntu" ]; then
         dist="$HOME/.config/Code/User/settings.json"
     else
-        error "0102" "Unsupported OS" "Your platform($(get_os_name)) is not supported."
+        error "0102" "Unsupported OS" "Your platform \"$(get_os_name)\" is not supported."
     fi
     if is_setup "$display_name"; then
         echo -e "\n$display_name のリンクを作成します."
