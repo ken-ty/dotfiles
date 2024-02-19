@@ -120,7 +120,7 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
     elif [ "$(get_os_name)" == "Ubuntu" ]; then
         dist="$HOME/.config/Code/User/settings.json"
     else
-        error "0102" "Unsupported OS" "Your platform is not supported."
+        error "0102" "Unsupported OS" "Your platform($(get_os_name)) is not supported."
     fi
     if is_setup "$display_name"; then
         echo -e "\n$display_name のリンクを作成します."
