@@ -136,7 +136,9 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
     display_name="vscode/my_vscode_extensions.sh"
     if is_setup "$display_name"; then
         echo -e "\n$display_name を実行して拡張をインポートします."
+        set +e # 途中でエラーが発生しても続行する
         source "$DOT_DIR/vscode/my_vscode_extensions.sh"
+        set -e # エラーが発生したら終了する
         echo "$display_name を実行して拡張をインポートしました."
     fi
 
