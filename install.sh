@@ -136,7 +136,9 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
     display_name="vscode/my_vscode_extensions.sh"
     if is_setup "$display_name"; then
         echo -e "\n$display_name を実行して拡張をインポートします."
+        set +e # 途中でエラーが発生しても続行する
         source "$DOT_DIR/vscode/my_vscode_extensions.sh"
+        set -e # エラーが発生したら終了する
         echo "$display_name を実行して拡張をインポートしました."
     fi
 
@@ -148,6 +150,18 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
         echo -e "\n$display_name のリンクを作成します."
 
         [ -e "$dist" ] && mkdir -p "$BACKUP_DIR/asdf/" && mv "$dist" "$BACKUP_DIR/asdf/.tool-versions" # バックアップ
+
+        ln -sf "$src" "$dist"  # リンク作成
+        echo "$display_name のリンクを作成しました."
+    fi
+
+    display_name="git/.gitconfig"
+    src="$DOT_DIR/git/.gitconfig"
+    dist="$HOME/.gitconfig"
+    if is_setup "$display_name"; then
+        echo -e "\n$display_name のリンクを作成します."
+
+        [ -e "$dist" ] && mkdir -p "$BACKUP_DIR/git/" && mv "$dist" "$BACKUP_DIR/git/.gitconfig" # バックアップ
 
         ln -sf "$src" "$dist"  # リンク作成
         echo "$display_name のリンクを作成しました."
