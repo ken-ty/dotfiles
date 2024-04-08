@@ -137,6 +137,8 @@
   "dart.flutterSdkPath": null,
   // vscode の pub get 自動実行を無効化する
   "dart.runPubGetOnPubspecChanges": "never",
+  // デバッグ時のツールバーを中央に固定する
+  "debug.toolBarLocation": "commandCenter",
   // js のフォーマッターの指定
   "[javascript]": {
     "editor.defaultFormatter": "vscode.typescript-language-features"
