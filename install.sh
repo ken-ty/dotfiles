@@ -155,6 +155,19 @@ set -eu # エラーが発生した場合や未定義の変数が使用された�
         echo "$display_name のリンクを作成しました."
     fi
 
+    # asdf の ruby gem install ファイル
+    display_name="asdf/.default-gems"
+    src="$DOT_DIR/asdf/.default-gems"
+    dist="$HOME/.tool-versions"
+    if is_setup "$display_name"; then
+        echo -e "\n$display_name のリンクを作成します."
+
+        [ -e "$dist" ] && mkdir -p "$BACKUP_DIR/asdf/" && mv "$dist" "$BACKUP_DIR/asdf/.default-gems" # バックアップ
+
+        ln -sf "$src" "$dist"  # リンク作成
+        echo "$display_name のリンクを作成しました."
+    fi
+
     display_name="git/.gitconfig"
     src="$DOT_DIR/git/.gitconfig"
     dist="$HOME/.gitconfig"

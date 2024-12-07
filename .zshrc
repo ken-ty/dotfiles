@@ -6,6 +6,10 @@ ENABLE_PERFORMANCE_MEASUREMENT='TRUE' # 'TRUE' || 'FALSE'
 # パフォーマンス計測 開始
 [ $ENABLE_PERFORMANCE_MEASUREMENT = 'TRUE' ] && zmodload zsh/zprof
 
+# homebrew
+export PATH="/opt/homebrew/bin:$PATH"
+
+
 
 # 環境変数を設定 ここから {{{
   export LANG=ja_JP.UTF-8 # 言語は日本語を選択
