@@ -108,7 +108,8 @@ if [ ! -d "$DOT_DIR" ]; then
     mv -f dotfiles-main "$DOT_DIR"
     echo "dotfiles downloaded."
 else
-    error_exit "0101" "dotfiles directory already exists" "Please backup and remove $DOT_DIR before running the script."
+    error_exit "0101" "dotfiles already exists!" \
+    "You should backup \"\$HOME/dotfiles\" and execute the following command:\n\n    rm -rf \$HOME/dotfiles"
 fi
 
 # dotfiles のリンク作成
