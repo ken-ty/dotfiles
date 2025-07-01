@@ -32,7 +32,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 # }}} その他設定 ここまで
 
 # バージョン管理ツールの読み込み ここから {{{
-  source $HOME/.asdf/asdf.sh # asdf 読み込む
+  export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH" # asdf 読み込む
   # # Flutter の パス通す
   # export PATH="$PATH:/Users/apple/develop/flutter/bin"
   # `dart pub global activate xxx` でインストールしたコマンドを使えるようにする.
