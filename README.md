@@ -20,18 +20,21 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 
 このリポジトリをクローンし、dotfiles をセットアップするには以下のコマンドを実行します：
 
-```
+```bash
 bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
 ```
 
 ### このコマンドが行う処理
+
 1. `$HOME/dotfiles` ディレクトリにリポジトリをダウンロード。
 2. 必要な設定ファイルのシンボリックリンクを作成。
 3. 既存の設定ファイルを `$HOME/dotfiles_backup` にバックアップ。
+4. ai-skills リポジトリの clone（任意、対話式で URL を指定可能）。
 
 > **注意:** `$HOME/dotfiles` がすでに存在する場合、削除してから再実行してください。  
 > 以下のコマンドで削除可能です：  
-> ```
+>
+> ```bash
 > rm -rf $HOME/dotfiles
 > ```
 
@@ -42,19 +45,22 @@ bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
 インストール後、環境を有効にするために以下のコマンドを実行してください：
 
 ### 1. zshrc の再読み込み
-```
+
+```bash
 source $HOME/.zshrc
 ```
 
 ### 2. gitconfig.local の作成
+
 秘匿情報や個人によって異なる Git 設定は `git/.gitconfig.local` に記載します。
 このファイルは `.gitignore` で追跡対象外にしているため、手動で作成してください。
 
-```
+```bash
 touch $HOME/dotfiles/git/.gitconfig.local
 ```
 
 必要に応じて、ユーザー名やメールアドレスなどを記載します：
+
 ```gitconfig
 [user]
     name = Your Name
@@ -62,18 +68,30 @@ touch $HOME/dotfiles/git/.gitconfig.local
 ```
 
 ### 3. ai-skills のセットアップ (任意)
-`install.sh` 実行時にスキップした場合や、後から追加する場合は以下を実行します：
+
+`install.sh` の実行中に ai-skills のセットアップを選択すると、リポジトリ URL の入力を求められます。
+デフォルトは `git@github.com:ken-ty/ai-skills.git` (private) で、Enter だけで進めます。
+別のリポジトリを使いたい場合は URL を入力してください。
+
+clone 後、スキルを各 AI エージェントにリンクするには以下を実行します：
+
+```bash
+$HOME/dotfiles/ai-skills/setup.sh
+```
+
+`install.sh` でスキップした場合は、後から手動で clone できます：
 
 ```bash
 git clone <your-ai-skills-repo-url> $HOME/dotfiles/ai-skills
-$HOME/dotfiles/ai-skills/setup.sh
 ```
 
 `ai-skills/` は `.gitignore` で追跡対象外のため、各自のリポジトリを自由に使えます。
 
 ### 4. VSCode の拡張機能インポート
+
 必要に応じて、VSCode の拡張機能をインポートします：
-```
+
+```bash
 source $HOME/dotfiles/vscode/my_vscode_extensions.sh
 ```
 
