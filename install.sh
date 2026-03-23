@@ -157,8 +157,13 @@ if prompt_setup "ai-skills"; then
     read -r skills_repo_url
     skills_repo_url="${skills_repo_url:-$DEFAULT_SKILLS_REPO}"
     echo "Cloning from $skills_repo_url ..."
-    git clone "$skills_repo_url" "$DOT_DIR/ai-skills"
-    echo "ai-skills cloned. Run '$DOT_DIR/ai-skills/setup.sh' to link skills."
+    if git clone "$skills_repo_url" "$DOT_DIR/ai-skills"; then
+        echo "ai-skills cloned. Run '$DOT_DIR/ai-skills/setup.sh' to link skills."
+    else
+        echo "Warning: Failed to clone ai-skills." >&2
+        echo "  SSH key が未設定の場合は HTTPS URL を試してください:" >&2
+        echo "  git clone https://github.com/<account>/ai-skills.git $DOT_DIR/ai-skills" >&2
+    fi
 fi
 
 echo -e "\nAll steps completed successfully!"
