@@ -46,7 +46,22 @@ bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
 source $HOME/.zshrc
 ```
 
-### 2. VSCode の拡張機能インポート
+### 2. gitconfig.local の作成
+秘匿情報や個人によって異なる Git 設定は `git/.gitconfig.local` に記載します。
+このファイルは `.gitignore` で追跡対象外にしているため、手動で作成してください。
+
+```
+touch $HOME/dotfiles/git/.gitconfig.local
+```
+
+必要に応じて、ユーザー名やメールアドレスなどを記載します：
+```gitconfig
+[user]
+    name = Your Name
+    email = your@email.com
+```
+
+### 3. VSCode の拡張機能インポート
 必要に応じて、VSCode の拡張機能をインポートします：
 ```
 source $HOME/dotfiles/vscode/my_vscode_extensions.sh
