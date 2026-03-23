@@ -61,7 +61,17 @@ touch $HOME/dotfiles/git/.gitconfig.local
     email = your@email.com
 ```
 
-### 3. VSCode の拡張機能インポート
+### 3. ai-skills のセットアップ (任意)
+`install.sh` 実行時にスキップした場合や、後から追加する場合は以下を実行します：
+
+```bash
+git clone <your-ai-skills-repo-url> $HOME/dotfiles/ai-skills
+$HOME/dotfiles/ai-skills/setup.sh
+```
+
+`ai-skills/` は `.gitignore` で追跡対象外のため、各自のリポジトリを自由に使えます。
+
+### 4. VSCode の拡張機能インポート
 必要に応じて、VSCode の拡張機能をインポートします：
 ```
 source $HOME/dotfiles/vscode/my_vscode_extensions.sh
