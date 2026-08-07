@@ -24,6 +24,35 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
 ```
 
+### Windows
+
+`install.sh` は Mac / Ubuntu 専用（Git Bash から実行すると案内を出して止まる）。Windows は
+**`install.ps1`** を使う。
+
+```powershell
+git clone git@github.com:ken-ty/dotfiles.git
+powershell -ExecutionPolicy Bypass -File dotfiles\install.ps1
+```
+
+「git を入れる」から「Claude Code でスキルが有効になる」までを一本で通す:
+
+1. winget で Git / GitHub CLI / ghq / Node.js
+2. Discord（任意）
+3. `core.sshCommand` を Windows OpenSSH に向ける ── **非 ASCII のユーザ名では必須**。
+   これが無いと、鍵も登録も正しいのに `publickey` 拒否になる
+4. ed25519 鍵の生成 → 公開鍵を表示 → 登録待ち → `ssh -T` で疎通確認
+5. `gh auth status`（ログインはブラウザ対話なので手動）
+6. agent-skills / agent-skills-store を clone して配線
+
+**symlink の権限が無ければ、6 で失敗せずに打つべきコマンドを表示して飛ばす。**
+開発者モードか sudo のどちらかを有効にして再実行すれば、そこだけ進む。
+
+`install.sh` と違い**設定ファイルの symlink は張らない**（Windows は symlink に特権が要り、
+`.zshrc` も使わないため）。共通化は後回しにしてある。
+
+詰まりどころの詳細は `my-windows-setup` スキル
+（[agent-skills-store](https://github.com/ken-ty/agent-skills-store)）にある。
+
 ### このコマンドが行う処理
 
 1. `$HOME/dotfiles` ディレクトリにリポジトリをダウンロード。
