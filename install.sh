@@ -65,6 +65,16 @@ get_os_name() {
     esac
 }
 
+# Windows は uname が MINGW64_NT-... を返すので get_os_name まで進めば落ちるが、
+# そこに着く前に Step 2 の tar 展開や ln -s が中途半端に走ってしまう。しかも
+# "Unsupported OS" だけでは Windows 用の入口があることが分からない。先に案内して止める。
+case "$(uname -s 2>/dev/null || echo unknown)" in
+    MINGW*|MSYS*|CYGWIN*)
+        error_exit "0102" "This is Windows" \
+        "Use the PowerShell installer instead:\n\n    powershell -ExecutionPolicy Bypass -File install.ps1"
+        ;;
+esac
+
 # backup_and_link: ファイルのバックアップを作成し、シンボリックリンクを作成
 # 引数:
 #   $1: 元ファイルのパス (ソース)
