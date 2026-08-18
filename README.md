@@ -13,8 +13,29 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 | `.gitconfig`           | git の設定                          |
 | `vscode/settings.json` | VSCode の User 設定                 |
 | `.tool-versions`       | asdf で管理している各ツールのグローバルバージョン |
+| `mcp/servers.json`     | Claude Code に繋ぐ MCP サーバの宣言   |
 
 ---
+
+## MCP
+
+Claude Code に繋ぐ MCP サーバを `mcp/servers.json` で宣言的に管理しています。
+新しいマシンでは dotfiles を入れたあとに一度流します。
+
+```bash
+bash mcp/install.sh
+```
+
+繋がらないものがあるときは、宣言と実態のズレを見ます（読み取りのみ）。
+
+```bash
+bash mcp/doctor.sh
+```
+
+`claude.ai` のコネクタ（Notion / Gmail / Slack / …）は **OAuth トークンが実体なので
+設定からは復元できません**。`install.sh` はチェックリストを出すだけで、認証は手動です。
+
+詳細は [`mcp/README.md`](mcp/README.md)。
 
 ## Usage
 
