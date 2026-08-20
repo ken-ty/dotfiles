@@ -147,6 +147,24 @@ source $HOME/dotfiles/vscode/my_vscode_extensions.sh
 
 ---
 
+## CI
+
+**このリポジトリに GitHub Actions のワークフローは無い。**
+
+以前は `github-actions-demo.yml`（GitHub のチュートリアルそのままの、echo だけを
+するデモ）が置いてあったが、**何も検証していないうえ `on: [push]` で全ブランチに
+発火していた**ので消した。private リポジトリなので、走った分は無料枠 2,000 分を
+そのまま食う。
+
+検証したいものが出てきたら足してよい。そのときは
+[cost-management のチェックリスト](https://github.com/ken-ty/cost-management/blob/main/github-actions/docs/workflow-checklist.md)
+を上から見ること。特に **`timeout-minutes` と `concurrency` は必須**
+（消したデモにはどちらも無く、既定の 360 分が効く形だった）。
+
+経緯 → [ken-ty/cost-management#12](https://github.com/ken-ty/cost-management/issues/12)
+
+---
+
 ## TODO
 
 - 各設定ファイルの具体的な役割や使用例についてのドキュメントを作成する：
