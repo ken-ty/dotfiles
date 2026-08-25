@@ -58,7 +58,11 @@ powershell -ExecutionPolicy Bypass -File dotfiles\install.ps1
 1. `$HOME/dotfiles` ディレクトリにリポジトリをダウンロード。
 2. 必要な設定ファイルのシンボリックリンクを作成。
 3. 既存の設定ファイルを `$HOME/dotfiles_backup` にバックアップ。
-4. ai-skills リポジトリの clone（任意、対話式で URL を指定可能）。
+
+> **`install.sh` は AI エージェントのスキルを扱いません。** 以前は `ai-skills` を clone して
+> いましたが、そのリポジトリは保守されていないため落としました。スキルが要るなら
+> [agent-skills](https://github.com/ken-ty/agent-skills) を別途入れてください。
+> Windows の `install.ps1` は Step 6 でそこまで面倒を見ます（sh 側との共通化は未着手）。
 
 > **注意:** `$HOME/dotfiles` がすでに存在する場合、削除してから再実行してください。  
 > 以下のコマンドで削除可能です：  
@@ -96,27 +100,7 @@ touch $HOME/dotfiles/git/.gitconfig.local
     email = your@email.com
 ```
 
-### 3. ai-skills のセットアップ (任意)
-
-`install.sh` の実行中に ai-skills のセットアップを選択すると、リポジトリ URL の入力を求められます。
-デフォルトは `git@github.com:ken-ty/ai-skills.git` (private) で、Enter だけで進めます。
-別のリポジトリを使いたい場合は URL を入力してください。
-
-clone 後、スキルを各 AI エージェントにリンクするには以下を実行します：
-
-```bash
-$HOME/dotfiles/ai-skills/setup.sh
-```
-
-`install.sh` でスキップした場合は、後から手動で clone できます：
-
-```bash
-git clone <your-ai-skills-repo-url> $HOME/dotfiles/ai-skills
-```
-
-`ai-skills/` は `.gitignore` で追跡対象外のため、各自のリポジトリを自由に使えます。
-
-### 4. VSCode の拡張機能インポート
+### 3. VSCode の拡張機能インポート
 
 必要に応じて、VSCode の拡張機能をインポートします：
 
