@@ -160,6 +160,11 @@ done
 # Git の設定
 backup_and_link "$DOT_DIR/git/.gitconfig" "$HOME/.gitconfig" "Git config"
 
+# macOS のシステム設定 (defaults)
+if [ "$os_name" == "Mac" ] && prompt_setup "macOS defaults"; then
+    bash "$DOT_DIR/macos/defaults.sh"
+fi
+
 echo -e "\nAll steps completed successfully!"
 echo
 echo "AI エージェントのスキルはここでは入れません。必要なら別途:"
