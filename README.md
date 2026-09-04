@@ -14,6 +14,7 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 | `vscode/settings.json` | VSCode の User 設定                 |
 | `.tool-versions`       | asdf で管理している各ツールのグローバルバージョン |
 | `mcp/servers.json`     | Claude Code に繋ぐ MCP サーバの宣言   |
+| `macos/defaults.sh`    | macOS のシステム設定 (defaults)。Spaces の並びなど |
 
 ---
 
@@ -36,6 +37,20 @@ bash mcp/doctor.sh
 設定からは復元できません**。`install.sh` はチェックリストを出すだけで、認証は手動です。
 
 詳細は [`mcp/README.md`](mcp/README.md)。
+
+## macOS のシステム設定
+
+「システム設定」で手で触る項目のうち `defaults` で再現できるものを `macos/defaults.sh` に集めています。
+`install.sh` から呼ばれますが、単独でも流せます (冪等)。
+
+```bash
+bash macos/defaults.sh
+```
+
+いま入っているのは Mission Control の「操作スペースを最近使った順に自動で並べ替える」をオフにする 1 件です。
+これがオンだと、Cmd+Tab で別スペースのアプリへ飛ぶたびにスペースの並びが崩れます。
+
+詳細は [`macos/README.md`](macos/README.md)。
 
 ## Usage
 
