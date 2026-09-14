@@ -144,22 +144,15 @@ bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (
 source $HOME/.zshrc
 ```
 
-### 2. gitconfig.local の作成
+### 2. gitconfig.local
 
-秘匿情報や個人によって異なる Git 設定は `git/.gitconfig.local` に記載します。
-このファイルは `.gitignore` で追跡対象外にしているため、手動で作成してください。
+秘匿情報や機械ごとに違う Git 設定 (`gh auth setup-git` が書く credential helper など) は
+`git/.gitconfig.local` に書きます。`.gitignore` で追跡対象外です。
 
-```bash
-touch $HOME/dotfiles/git/.gitconfig.local
-```
-
-必要に応じて、ユーザー名やメールアドレスなどを記載します：
-
-```gitconfig
-[user]
-    name = Your Name
-    email = your@email.com
-```
+`install.sh` が空のファイルを作って `~/.gitconfig.local` に symlink します。
+`.gitconfig` の `include.path = .gitconfig.local` は **`~/.gitconfig` からの相対で解決され、
+symlink を辿らない** ので、`git/.gitconfig.local` に書いただけでは読まれません
+(2026-09-14 に mini で実測。MBP も同じ状態で、読まれていなかった)。
 
 ### 3. VSCode の拡張機能インポート
 

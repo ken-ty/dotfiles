@@ -197,6 +197,10 @@ done
 
 # Git の設定
 backup_and_link "$DOT_DIR/git/.gitconfig" "$HOME/.gitconfig" "Git config"
+# .gitconfig の include は「~/.gitconfig からの相対」で解決される (symlink を辿らない) ので、
+# ~/.gitconfig.local も張る。中身は機械ごと (gh の credential helper など)。無ければ空で作る
+[ -e "$DOT_DIR/git/.gitconfig.local" ] || touch "$DOT_DIR/git/.gitconfig.local"
+backup_and_link "$DOT_DIR/git/.gitconfig.local" "$HOME/.gitconfig.local" "Git config (local)"
 
 # VSCode の設定 (--yes のときは飛ばす。サーバーに VSCode は無い)
 if ! $YES; then
