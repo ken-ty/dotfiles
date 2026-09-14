@@ -13,6 +13,7 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 | `.gitconfig`           | git の設定                          |
 | `vscode/settings.json` | VSCode の User 設定                 |
 | `.tool-versions`       | asdf で管理している各ツールのグローバルバージョン |
+| `chunks/<名前>/Brewfile` | Homebrew で入れるものを技術のひと塊 (チャンク) ごとに分けたもの。「チャンク」の節 |
 | `mcp/servers.json`     | Claude Code に繋ぐ MCP サーバの宣言   |
 | `macos/defaults.sh`    | macOS のシステム設定 (defaults)。Spaces の並びなど |
 
@@ -91,21 +92,45 @@ powershell -ExecutionPolicy Bypass -File dotfiles\install.ps1
 
 ### このコマンドが行う処理
 
-1. `$HOME/dotfiles` ディレクトリにリポジトリをダウンロード。
-2. 必要な設定ファイルのシンボリックリンクを作成。
-3. 既存の設定ファイルを `$HOME/dotfiles_backup` にバックアップ。
+1. `$HOME/dotfiles` にリポジトリを `git clone` (git が無ければ tarball)。**すでに git checkout があればそのまま使う** (ghq 配下への symlink でもよい)
+2. 設定ファイルのシンボリックリンクを作成。既存のファイルは `$HOME/dotfiles_backup` に退避。すでに同じ場所を指していれば何もしない
+3. Homebrew が無ければ入れ、**チャンク** (下記) を選んで `brew bundle`
+4. macOS の `defaults` (任意)
+
+何度実行しても同じ結果になります。`$HOME/dotfiles` が git checkout でないディレクトリのときだけ止まるので、
+そのときは退避してから再実行してください。
+
+```bash
+bash install.sh                            # 対話。設定ファイルは 1 つずつ聞き、チャンクは 3 択
+bash install.sh --mode recommended --yes   # 何も聞かない。サーバー向け
+bash install.sh --mode full                # 全チャンク
+bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (推奨のものは既定 Y)
+```
 
 > **`install.sh` は AI エージェントのスキルを扱いません。** 以前は `ai-skills` を clone して
 > いましたが、そのリポジトリは保守されていないため落としました。スキルが要るなら
 > [agent-skills](https://github.com/ken-ty/agent-skills) を別途入れてください。
 > Windows の `install.ps1` は Step 6 でそこまで面倒を見ます（sh 側との共通化は未着手）。
 
-> **注意:** `$HOME/dotfiles` がすでに存在する場合、削除してから再実行してください。  
-> 以下のコマンドで削除可能です：  
->
-> ```bash
-> rm -rf $HOME/dotfiles
-> ```
+### チャンク
+
+技術を 1 塊ごとに `chunks/<名前>/` に分けてあります。`Brewfile` (何を入れるか) と、任意の `install.sh`
+(入れた後の 1 手。asdf のプラグインや fzf のキーバインドなど)。`Brewfile` 1 行目の `# desc:` が一覧に出ます。
+
+| チャンク | 中身 | 推奨 |
+| --- | --- | --- |
+| `core` | git / gh / ghq / fzf / jq / tree / tig。`.zshrc` が前提にしている | ✓ |
+| `zsh` | zsh-autosuggestions / zsh-completions / zsh-git-prompt | ✓ |
+| `node` | asdf と `.tool-versions` の nodejs | ✓ |
+| `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
+| `flutter` | asdf の flutter、fvm、xcodes、openjdk、bundletool | |
+| `media` | ffmpeg / graphviz / librsvg / webp / avif など | |
+| `langs` | php / python / rbenv / mysql@5.7 / yarn / chezmoi | |
+| `gui` | appflowy / vagrant / virtualbox (cask) | |
+| `vscode` | VSCode の拡張機能。`code` コマンドが要る | |
+
+推奨 (`--mode recommended`) は `chunks/recommended` に列挙したもの。サーバーには推奨だけ入れ、
+開発機は full か select で足します。チャンクを足すときはディレクトリを 1 つ作るだけで一覧に出ます。
 
 ---
 

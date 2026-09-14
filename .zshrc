@@ -40,7 +40,10 @@ export PATH="/opt/homebrew/bin:$PATH"
   export PATH="$PATH":"$HOME/.pub-cache/bin"
   # asdf-flutter の為に FLUTTER_ROOT を設定する
   # @see https://github.com/oae/asdf-flutter の README
-  export FLUTTER_ROOT="$(asdf where flutter)"
+  # flutter を入れていない機械 (サーバー) では飛ばす
+  if asdf plugin list 2>/dev/null | grep -qx flutter; then
+    export FLUTTER_ROOT="$(asdf where flutter)"
+  fi
 
   # # android path 追加
   # export PATH=$PATH:/Users/apple/Library/Android/sdk/platform-tools
