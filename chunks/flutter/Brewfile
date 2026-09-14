@@ -1,0 +1,9 @@
+# desc: Flutter / Dart / Java / Xcode 周り (asdf の flutter、fvm、xcodes、openjdk、bundletool)
+tap "dart-lang/dart"
+tap "leoafarias/fvm"
+tap "xcodesorg/made"
+brew "openjdk"
+brew "bundletool"
+brew "xcodesorg/made/xcodes"
+cask "adoptopenjdk"
+cask "xcodes"

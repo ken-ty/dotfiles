@@ -1,0 +1,5 @@
+# desc: colima + docker CLI (Docker Desktop の代わり)。Docker Desktop が入っている機械には入れない
+brew "colima"
+brew "docker"
+brew "docker-buildx"
+brew "docker-compose"

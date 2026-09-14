@@ -1,0 +1,2 @@
+# desc: asdf と Node.js (.tool-versions の nodejs を入れる)
+brew "asdf"

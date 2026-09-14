@@ -1,0 +1,9 @@
+# desc: その他の言語と DB (php / python / rbenv / mysql@5.7 / yarn / chezmoi)
+brew "php"
+brew "python@3.11"
+brew "python@3.9"
+brew "rbenv"
+brew "mysql@5.7"
+brew "yarn"
+brew "chezmoi"
+brew "sl"
