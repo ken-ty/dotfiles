@@ -1,5 +1,4 @@
 # desc: git / gh / ghq / fzf / jq / tree / tig — どのマシンにも要る基本ツール (.zshrc が前提にしている)
-tap "motemen/ghq"
 brew "git"
 brew "gh"
 brew "ghq"
