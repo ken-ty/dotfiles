@@ -27,18 +27,6 @@
           "CHATWORK_API_TOKEN=$(security find-generic-password -a \"$USER\" -s CHATWORK_API_TOKEN -w) exec npx -y @chatwork/mcp-server"
         ]
       }
-    },
-    {
-      "name": "pencil",
-      "note": "Pencil の VS Code 拡張が入っている環境のみ。拡張の更新でパスが変わる。",
-      "optional": true,
-      "requires_file": "$HOME/.pencil/mcp/visual_studio_code/out/mcp-server-darwin-arm64",
-      "config": {
-        "type": "stdio",
-        "command": "$HOME/.pencil/mcp/visual_studio_code/out/mcp-server-darwin-arm64",
-        "args": ["--app", "visual_studio_code", "--agent", "claudeCodeCLI"],
-        "env": {}
-      }
     }
   ],
 
@@ -50,17 +38,6 @@
       "config": {
         "type": "http",
         "url": "http://127.0.0.1:8080/mcp"
-      }
-    },
-    {
-      "name": "notion-mcp",
-      "path": "$HOME/ghq/github.com/ken-ty/kenty-ai",
-      "note": "Notion 公式 MCP を stdio で。claude.ai コネクタ版とは別物。",
-      "config": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@notionhq/notion-mcp-server"],
-        "env": {}
       }
     }
   ],

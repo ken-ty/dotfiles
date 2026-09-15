@@ -119,14 +119,14 @@ bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (
 
 | チャンク | 中身 | 推奨 |
 | --- | --- | --- |
-| `core` | git / gh / ghq / fzf / jq / tree / tig。`.zshrc` が前提にしている。`install.sh` が `~/.fzf.zsh` を作る (指す先が消えていれば作り直す) | ✓ |
+| `core` | git / gh / ghq / fzf / jq / tree / tig / bw。`.zshrc` が前提にしている。`install.sh` が `~/.fzf.zsh` を作る (指す先が消えていれば作り直す) | ✓ |
 | `zsh` | zsh-autosuggestions / zsh-completions / zsh-git-prompt。`.zshrc` が前 2 つを読む。`install.sh` が compaudit を通す | ✓ |
 | `node` | asdf と `.tool-versions` の nodejs | ✓ |
 | `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
-| `flutter` | asdf の flutter、fvm、xcodes、openjdk、bundletool | |
+| `flutter` | asdf の flutter、fvm、xcodes CLI、openjdk、bundletool。JDK は brew の openjdk 1 本 | |
 | `media` | ffmpeg / graphviz / librsvg / webp / avif など | |
-| `langs` | php / python / rbenv / mysql@5.7 / yarn / chezmoi | |
-| `gui` | appflowy / vagrant / virtualbox (cask) | |
+| `langs` | php / python / rbenv / yarn / chezmoi | |
+| `gui` | vagrant / virtualbox (cask) | |
 | `vscode` | VSCode の拡張機能。`code` コマンドが要る | |
 
 推奨 (`--mode recommended`) は `chunks/recommended` に列挙したもの。サーバーには推奨だけ入れ、

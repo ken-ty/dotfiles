@@ -1,9 +1,7 @@
-# desc: Flutter / Dart / Java / Xcode 周り (asdf の flutter、fvm、xcodes、openjdk、bundletool)
+# desc: Flutter / Dart / Java / Xcode 周り (asdf の flutter、fvm、xcodes CLI、openjdk、bundletool)
 tap "dart-lang/dart"
 tap "leoafarias/fvm"
 tap "xcodesorg/made"
-brew "openjdk"
+brew "openjdk" # JDK はこれだけ。/usr/libexec/java_home に見せるには install.sh の symlink
 brew "bundletool"
-brew "xcodesorg/made/xcodes"
-cask "adoptopenjdk"
-cask "xcodes"
+brew "xcodesorg/made/xcodes" # CLI。GUI 版 (cask xcodes-app) は使っていないので入れない。CLI と GUI が両方あるものは CLI に寄せる
