@@ -119,7 +119,7 @@ bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (
 
 | チャンク | 中身 | 推奨 |
 | --- | --- | --- |
-| `core` | git / gh / ghq / fzf / jq / tree / tig。`.zshrc` が前提にしている | ✓ |
+| `core` | git / gh / ghq / fzf / jq / tree / tig。`.zshrc` が前提にしている。`install.sh` が `~/.fzf.zsh` を作る (指す先が消えていれば作り直す) | ✓ |
 | `zsh` | zsh-autosuggestions / zsh-completions / zsh-git-prompt | ✓ |
 | `node` | asdf と `.tool-versions` の nodejs | ✓ |
 | `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
