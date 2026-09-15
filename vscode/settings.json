@@ -263,5 +263,6 @@
   // ファイル移動時に import を書き換える
   "js/ts.updateImportsOnFileMove.enabled": "always",
   // Remote (devcontainer/ssh) のポート転送は出力とプロセスの両方から拾う
-  "remote.autoForwardPortsSource": "hybrid"
+  "remote.autoForwardPortsSource": "hybrid",
+  "claudeCode.hideOnboarding": true
 }
