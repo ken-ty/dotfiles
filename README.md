@@ -123,7 +123,7 @@ bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (
 | `zsh` | zsh-autosuggestions / zsh-completions / zsh-git-prompt | ✓ |
 | `node` | asdf と `.tool-versions` の nodejs | ✓ |
 | `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
-| `flutter` | asdf の flutter、fvm、xcodes、openjdk、bundletool | |
+| `flutter` | asdf の flutter、fvm、xcodes CLI、openjdk、bundletool。JDK は brew の openjdk 1 本 | |
 | `media` | ffmpeg / graphviz / librsvg / webp / avif など | |
 | `langs` | php / python / rbenv / mysql@5.7 / yarn / chezmoi | |
 | `gui` | appflowy / vagrant / virtualbox (cask) | |
