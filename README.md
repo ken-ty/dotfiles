@@ -10,6 +10,8 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 | ファイル名              | 説明                                 |
 | ----------------------- | ------------------------------------ |
 | `.zshrc`               | zsh の設定                          |
+| `zsh/keybindings.conf` | zsh のキーバインドの表。「キーバインド」の節 |
+| `zsh/widgets/*.zsh`    | キーバインドから呼ぶ zle ウィジェット。1 関数 1 ファイル |
 | `.gitconfig`           | git の設定                          |
 | `vscode/settings.json` | VSCode の User 設定                 |
 | `.tool-versions`       | asdf で管理している各ツールのグローバルバージョン |
@@ -18,6 +20,33 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 | `macos/defaults.sh`    | macOS のシステム設定 (defaults)。Spaces の並びなど |
 
 ---
+
+## キーバインド
+
+zsh のキーバインドは `.zshrc` に直書きせず、`zsh/keybindings.conf` の表で持つ。
+1 行 1 バインド、`空白区切り + # コメント`（fstab と同じ書式）。zsh の `read` で
+読めるので jq も yq も要らない。
+
+```
+# key    widget               state  説明
+^]       cd-ghq-list--fzf     on     ghq のリポジトリを fzf で選んで cd
+^R       fzf-history-widget   on     fzf 付属: 履歴を fzf で検索
+^T       fzf-file-widget      on     fzf 付属: ファイルを選んで挿入
+```
+
+fzf 付属のバインド（`^T` `^R` `Alt+C` `Tab`）も同じ表に載せてあるので、そこで
+`off` にすれば外れる。widget の実体は `zsh/widgets/<name>.zsh`（dotfiles 自前）か
+`fzf --zsh`（fzf 付属）。
+
+| やりたいこと | 手 |
+| --- | --- |
+| 一覧を見る | `keybind list` — 表と、実際に `bindkey` されているか（`bound` / `no-widget`）を並べて出す |
+| この機械だけ切る / 入れる | `keybind off '^T'` / `keybind on '^T'` — 即反映して `~/.zsh-keybindings.local` に書く（git 管理外） |
+| 全機械で変える | `keybind edit` → `keybindings.conf` を直す → commit |
+| キーを変える | 表の 1 列目を書き換える |
+
+`~/.zsh-keybindings.local` は `keybindings.conf` より後に読まれる（後勝ち）ので、
+「リポジトリでは on、この機械では off」が成り立つ。
 
 ## MCP
 
