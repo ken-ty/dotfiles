@@ -11,6 +11,7 @@ cask "google-drive"       # Google Docs / Sheets / Slides の .app はこれが�
 cask "spotify"
 cask "claude"             # デスクトップ版。CLI (claude) と両方使う
 cask "arq"                # バックアップ
+cask "adobe-creative-cloud" # Illustrator を使う。個々の Adobe アプリは CC からログインして入れる
 cask "obs"                # 配信・録画
 cask "rectangle"          # ウィンドウ整列
 cask "stats"              # メニューバーのシステムモニタ

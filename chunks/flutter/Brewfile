@@ -1,6 +1,4 @@
-# desc: Flutter / Dart / Java / Xcode 周り (asdf の flutter、fvm、xcodes CLI、openjdk、bundletool)
-tap "dart-lang/dart"
-tap "leoafarias/fvm"
+# desc: Flutter / Dart / Java / Xcode 周り (asdf の flutter、xcodes CLI、openjdk、bundletool、Android Studio)
 tap "xcodesorg/made"
 brew "openjdk" # JDK はこれだけ。/usr/libexec/java_home に見せるには install.sh の symlink
 brew "bundletool"
