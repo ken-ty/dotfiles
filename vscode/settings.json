@@ -248,8 +248,6 @@
   "workbench.iconTheme": "material-icon-theme",
   // vscode 起動直後に何も開かない
   "workbench.startupEditor": "none",
-  // テーマ (monokai.theme-monokai-pro-vscode)
-  "workbench.colorTheme": "Monokai Pro Light (Filter Sun)",
   // git blame をエディタ内に出す
   "git.blame.editorDecoration.enabled": true,
   // Claude Code の拡張はサイドバーではなくパネル (下) に出す
