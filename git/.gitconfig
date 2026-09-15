@@ -10,3 +10,5 @@
 	delete-branches = "!git branch | grep -v -e 'main' -e 'master' | xargs git branch -D"  # 今いるブランチと main 以外のブランチを全部削除する.
 [init]
     defaultBranch = main
+[fetch]
+	prune = true # fetch のたびにリモートで消えたブランチの追跡を消す

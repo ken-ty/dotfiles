@@ -1,7 +1,5 @@
-# Fig pre block. Keep at the top of this file.
-[[ -f "$HOME/.fig/shell/zshrc.pre.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.pre.zsh"
 # パフォーマンスチューニング有効化するかどうか
-ENABLE_PERFORMANCE_MEASUREMENT='TRUE' # 'TRUE' || 'FALSE'
+ENABLE_PERFORMANCE_MEASUREMENT='FALSE' # 'TRUE' にすると起動のたびに zprof の表が出る。遅いと感じたときだけ
 
 # パフォーマンス計測 開始
 [ $ENABLE_PERFORMANCE_MEASUREMENT = 'TRUE' ] && zmodload zsh/zprof
@@ -15,6 +13,10 @@ export PATH="/opt/homebrew/bin:$PATH"
   export LANG=ja_JP.UTF-8 # 言語は日本語を選択
   export EDITOR='vim' # エディタは vim を選択
 # }}} 環境変数を設定 ここまで
+
+# ローカル環境変数 (git 管理外。API キー等のシークレットや、この機械だけの設定を ~/.zshrc.local に書く) ここから {{{
+  [ -f ~/.zshrc.local ] && source ~/.zshrc.local
+# }}} ローカル環境変数 ここまで
 
 # 履歴を設定 ここから {{{
   HISTFILE=$HOME/.zsh-history # history がターミナル終了でリセットされないように外部ファイルに保存する
@@ -47,6 +49,14 @@ export PATH="/opt/homebrew/bin:$PATH"
 
   # # android path 追加
   # export PATH=$PATH:/Users/apple/Library/Android/sdk/platform-tools
+
+  # 以下は入っている機械でだけ効く。無ければ何もしない (chunks で入れるもの / 手で入れるもの)
+  # openjdk (chunks/flutter)。`brew --prefix` を毎回呼ぶと起動が遅くなるのでパスは決め打ち
+  [ -d /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home ] && export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
+  # uv (Python)。installer が置く env を読む
+  [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+  # maestro (モバイル E2E)
+  [ -d "$HOME/.maestro/bin" ] && export PATH="$PATH:$HOME/.maestro/bin"
 # }}} バージョン管理ツールの読み込み ここまで
 
 # コマンド追加 ここから {{{
@@ -136,13 +146,10 @@ export PATH="/opt/homebrew/bin:$PATH"
 
 # zsh 終了時に呼び出す関数を登録する ここから {{{
   # 参考は(こちら)[https://qiita.com/mollifier/items/558712f1a93ee07e22e2#zshexit]
-  zshexit() {
-    tomatomato # tomatomato を呼び出す
-  }
+  # tomatomato の自動呼び出しは外した。終了のたびに sleep 1 が入るため、
+  # エージェントやスクリプトが短命な zsh を大量に起動すると 1 回 1 秒の税になる。
+  # 遊びたいときは手で `tomatomato` と打つ。
 # }}}  zsh 終了時に呼び出す関数を登録する ここまで
 
 # パフォーマンス計測 終了
 [ $ENABLE_PERFORMANCE_MEASUREMENT = 'TRUE' ] && zprof
-
-# Fig post block. Keep at the bottom of this file.
-[[ -f "$HOME/.fig/shell/zshrc.post.zsh" ]] && builtin source "$HOME/.fig/shell/zshrc.post.zsh"

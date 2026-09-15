@@ -3,6 +3,9 @@
 // vscode の各種設定は以下を参照:
 // https://code.visualstudio.com/docs/getstarted/settings
 {
+  // 未保存のまま外部ツール (Pencil 等) から参照されると困るので自動保存する
+  "files.autoSave": "afterDelay",
+  "files.autoSaveDelay": 1000,
   // いつデバッグビューを開くか。都度開くの面倒なので、実行時に開く。
   "debug.openDebug": "openOnSessionStart",
   // デバッグ中に行内に変数値を表示
@@ -104,16 +107,16 @@
     "editor.selectionHighlight": false,
     "editor.suggestSelection": "first",
     "editor.tabCompletion": "onlySnippets",
-    "editor.wordBasedSuggestions": false,
+    "editor.wordBasedSuggestions": "off",
     // } オススメにのっとる ここまで 
     // 括弧の色をいい感じにする
     "editor.bracketPairColorization.enabled": true,
     // 保存時に実行するアクション
     "editor.codeActionsOnSave": {
-      // 開発者が考える必要のないコード修正を自動で実行する
-      "source.fixAll": true,
+      // 開発者が考える必要のないコード修正を自動で実行する ("explicit" = 手で保存したときだけ。autoSave では走らない)
+      "source.fixAll": "explicit",
       // インポートを自動で整理する https://dart.dev/effective-dart/style#ordering にのっとる
-      "source.organizeImports": true
+      "source.organizeImports": "explicit"
     },
     // ブラケットのペアを強調表示する
     "editor.guides.bracketPairs": true,
@@ -244,5 +247,21 @@
   // アイコンを設定する
   "workbench.iconTheme": "material-icon-theme",
   // vscode 起動直後に何も開かない
-  "workbench.startupEditor": "none"
+  "workbench.startupEditor": "none",
+  // git blame をエディタ内に出す
+  "git.blame.editorDecoration.enabled": true,
+  // Claude Code の拡張はサイドバーではなくパネル (下) に出す
+  "claudeCode.preferredLocation": "panel",
+  // Copilot Chat は使わない (Claude Code を使う)
+  "chat.disableAIFeatures": true,
+  // コメントビューを勝手に開かない
+  "comments.openView": "never",
+  // 確認ダイアログを減らす
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmPasteNative": false,
+  // ファイル移動時に import を書き換える
+  "js/ts.updateImportsOnFileMove.enabled": "always",
+  // Remote (devcontainer/ssh) のポート転送は出力とプロセスの両方から拾う
+  "remote.autoForwardPortsSource": "hybrid"
 }
