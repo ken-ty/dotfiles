@@ -1,4 +1,3 @@
-# desc: GUI アプリ (appflowy / vagrant / virtualbox)。サーバーには入れない
-cask "appflowy"
+# desc: GUI アプリ (vagrant / virtualbox)。サーバーには入れない
 cask "vagrant"
 cask "virtualbox"
