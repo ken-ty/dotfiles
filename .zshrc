@@ -71,49 +71,10 @@ export PATH="/opt/homebrew/bin:$PATH"
   # fzf 読み込み
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-  # ^] で ghq list の結果を fzf で 曖昧検索して目的の repo に cd する
-  # ghq については (こちら)[https://github.com/Songmu/ghq-handbook/blob/master/ja/01-introduction.md] を参照
-  function cd-ghq-list--fzf() {
-    local selected_dir=$(ghq list -p | fzf --query "$LBUFFER")
-    if [ -n "$selected_dir" ]; then
-      BUFFER="cd ${selected_dir}"
-      zle accept-line
-    fi
-    zle clear-screen
-  }
-  zle -N cd-ghq-list--fzf
-  bindkey '^]' cd-ghq-list--fzf
-
-  # ^r で history の結果を fzf で 曖昧検索して 目的のコマンドを選択する
-  function fzf-select-history() {
-    BUFFER=$(\history -n -r 1 | fzf --query "$LBUFFER")
-    CURSOR=$#BUFFER
-    zle clear-screen
-  }
-  zle -N fzf-select-history
-  bindkey '^r' fzf-select-history
-
-  # cdr
-  # if [[ -n $(echo ${^fpath}/chpwd_recent_dirs(N)) && -n $(echo ${^fpath}/cdr(N)) ]]; then
-  #     autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-  #     add-zsh-hook chpwd chpwd_recent_dirs
-  #     zstyle ':completion:*' recent-dirs-insert both
-  #     zstyle ':chpwd:*' recent-dirs-default true
-  #     zstyle ':chpwd:*' recent-dirs-max 1000
-  #     zstyle ':chpwd:*' recent-dirs-file "$HOME/.cache/chpwd-recent-dirs"
-  # fi
-
-  # # ctrl + f で過去に移動したことのあるディレクトリを選択できるようにする。
-  # パフォーマンス悪いので cdr をコメントアウトしているのでこれもコメントアウト
-  # function fzf-cdr () {
-  #     local selected_dir="$(cdr -l | sed 's/^[0-9]\+ \+//' | fzf --prompt="cdr >" --query "$LBUFFER")"
-  #     if [ -n "$selected_dir" ]; then
-  #         BUFFER="cd ${selected_dir}"
-  #         zle accept-line
-  #     fi
-  # }
-  # zle -N fzf-cdr
-  # bindkey '^f' fzf-cdr
+  # キーバインドは表で管理する (zsh/keybindings.conf)。widget は zsh/widgets/ に 1 関数 1 ファイル。
+  # fzf 付属の widget (^T ^R Alt+C Tab) も同じ表で on/off できるので、fzf より後に読む。
+  # 操作: keybind list / on / off / edit。この機械だけの変更は ~/.zsh-keybindings.local に落ちる。
+  source "${${(%):-%N}:A:h}/zsh/keybindings.zsh"
 
   # TOMATOMATO ゲームを開始する. ユーザーは早口で emoji を読んで下さい.
   function tomatomato() {
