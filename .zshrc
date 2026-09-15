@@ -61,6 +61,13 @@ export PATH="/opt/homebrew/bin:$PATH"
 
 # コマンド追加 ここから {{{
 
+  # 補完と入力候補 (chunks/zsh で入る。入っていない機械では何もしない)
+  # zsh-completions: 補完定義を fpath に足してから compinit を呼ぶ順序が必須
+  [ -d /opt/homebrew/share/zsh-completions ] && fpath=(/opt/homebrew/share/zsh-completions $fpath)
+  autoload -Uz compinit && compinit
+  # zsh-autosuggestions: 履歴からの入力候補を薄く出す。→ で採用
+  [ -f /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh ] && source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+
   # fzf 読み込み
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
