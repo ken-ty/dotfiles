@@ -1,3 +1,18 @@
-# desc: GUI アプリ (vagrant / virtualbox)。サーバーには入れない
-cask "vagrant"
-cask "virtualbox"
+# desc: 日常の GUI アプリ (ブラウザ / チャット / Notion / 音楽 / メニューバー常駐など)。サーバーには入れない
+# 2026-09-15 の MBP 棚卸しで「要る」にしたもの。開発ツールは devtools、App Store 経由は mas。
+cask "google-chrome"
+cask "slack"
+cask "discord"
+cask "chatwork"
+cask "zoom"
+cask "notion"
+cask "notion-calendar"
+cask "google-drive"       # Google Docs / Sheets / Slides の .app はこれが勝手に作るショートカット。宣言しない
+cask "spotify"
+cask "claude"             # デスクトップ版。CLI (claude) と両方使う
+cask "arq"                # バックアップ
+cask "obs"                # 配信・録画
+cask "rectangle"          # ウィンドウ整列
+cask "stats"              # メニューバーのシステムモニタ
+cask "jordanbaird-ice@beta" # メニューバーの整理 (Ice.app)
+cask "logi-options+"      # Logicool のマウス/キーボード設定 (旧 Logi Options の後継)

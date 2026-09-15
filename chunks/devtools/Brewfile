@@ -1,0 +1,10 @@
+# desc: 開発向けの GUI / SDK (VM、API クライアント、デザイン、トンネル)。開発機だけ
+cask "vagrant"
+cask "virtualbox"
+cask "postman"
+cask "pencil"                     # デザイン (.pen)。MCP の配線は mcp/servers.json
+cask "ngrok"
+cask "tuist"
+cask "xquartz"
+cask "codex"                      # OpenAI Codex CLI
+cask "github-copilot-for-xcode"
