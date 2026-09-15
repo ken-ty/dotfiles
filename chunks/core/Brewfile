@@ -9,3 +9,4 @@ brew "tig"
 brew "gnu-sed"
 brew "peco"
 brew "unzip"
+brew "bitwarden-cli" # bw。秘密の正本は Bitwarden (bitwarden-secrets スキル)
