@@ -152,10 +152,10 @@ bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (
 | `zsh` | zsh-autosuggestions / zsh-completions / zsh-git-prompt。`.zshrc` が前 2 つを読む。`install.sh` が compaudit を通す | ✓ |
 | `node` | asdf と `.tool-versions` の nodejs | ✓ |
 | `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
-| `flutter` | asdf の flutter、fvm、xcodes CLI、openjdk、bundletool、Android Studio。JDK は brew の openjdk 1 本 | |
+| `flutter` | asdf の flutter、xcodes CLI、openjdk、bundletool、Android Studio。JDK は brew の openjdk 1 本 | |
 | `media` | ffmpeg / graphviz / librsvg / webp / avif など | |
 | `langs` | php / python / rbenv / yarn / chezmoi / .NET SDK | |
-| `gui` | 日常の GUI アプリ (Chrome / Slack / Discord / Notion / Spotify / Claude / Arq / Rectangle / Stats / Ice …) | |
+| `gui` | 日常の GUI アプリ (Chrome / Slack / Discord / Notion / Spotify / Claude / Arq / Adobe CC / Rectangle / Stats / Ice …) | |
 | `devtools` | 開発向けの GUI と SDK (vagrant / virtualbox / Postman / ngrok / tuist / XQuartz / codex) | |
 | `mas` | App Store のアプリ (`mas`)。Bitwarden / LINE / Excel / Kindle / Brother の印刷系など | |
 | `vscode` | VSCode 本体 (cask) と拡張機能 | |
