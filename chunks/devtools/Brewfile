@@ -1,0 +1,10 @@
+# desc: 開発向けの GUI / SDK (VM、API クライアント、トンネル)。開発機だけ
+# Pencil (pen.dev) は cask が Gatekeeper 不合格で 2026-09-01 に disabled になった。手で入れる。MCP の配線は mcp/servers.json
+cask "vagrant"
+cask "virtualbox"
+cask "postman"
+cask "ngrok"
+cask "tuist"
+cask "xquartz"
+cask "codex"                      # OpenAI Codex CLI
+cask "github-copilot-for-xcode"

@@ -1,4 +1,5 @@
-# desc: VSCode の拡張機能。`code` コマンドが要る (VSCode を先に入れる)
+# desc: VSCode 本体と拡張機能
+cask "visual-studio-code"
 vscode "aaron-bond.better-comments"
 vscode "adpyke.codesnap"
 vscode "alexisvt.flutter-snippets"
