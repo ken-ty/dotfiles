@@ -13,6 +13,7 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 | `zsh/keybindings.conf` | zsh のキーバインドの表。「キーバインド」の節 |
 | `zsh/widgets/*.zsh`    | キーバインドから呼ぶ zle ウィジェット。1 関数 1 ファイル |
 | `.gitconfig`           | git の設定                          |
+| `git/ignore`           | グローバル gitignore (`~/.config/git/ignore`)。全リポジトリで無視するもの |
 | `vscode/settings.json` | VSCode の User 設定                 |
 | `.tool-versions`       | asdf で管理している各ツールのグローバルバージョン |
 | `chunks/<名前>/Brewfile` | Homebrew で入れるものを技術のひと塊 (チャンク) ごとに分けたもの。「チャンク」の節 |

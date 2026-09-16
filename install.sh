@@ -201,6 +201,9 @@ backup_and_link "$DOT_DIR/git/.gitconfig" "$HOME/.gitconfig" "Git config"
 # ~/.gitconfig.local も張る。中身は機械ごと (gh の credential helper など)。無ければ空で作る
 [ -e "$DOT_DIR/git/.gitconfig.local" ] || touch "$DOT_DIR/git/.gitconfig.local"
 backup_and_link "$DOT_DIR/git/.gitconfig.local" "$HOME/.gitconfig.local" "Git config (local)"
+# グローバル gitignore。~/.config/git/ignore は git が既定で読む場所 (XDG) なので
+# .gitconfig に core.excludesfile は書かない
+backup_and_link "$DOT_DIR/git/ignore" "$HOME/.config/git/ignore" "Git global ignore"
 
 # VSCode の設定 (--yes のときは飛ばす。サーバーに VSCode は無い)
 if ! $YES; then
