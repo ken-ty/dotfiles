@@ -119,5 +119,15 @@ export PATH="/opt/homebrew/bin:$PATH"
   # 遊びたいときは手で `tomatomato` と打つ。
 # }}}  zsh 終了時に呼び出す関数を登録する ここまで
 
+# プロンプト ここから {{{
+  # 見た目は starship (chunks/zsh で入る) に任せる。定義は zsh/starship.toml。
+  # 入っていない機械では macOS 既定の `user@host dir %` のまま (何も壊れない)。
+  # 公式の案内どおり .zshrc の末尾で init する: https://starship.rs/guide/
+  if command -v starship >/dev/null; then
+    export STARSHIP_CONFIG="${${(%):-%N}:A:h}/zsh/starship.toml"
+    eval "$(starship init zsh)"
+  fi
+# }}} プロンプト ここまで
+
 # パフォーマンス計測 終了
 [ $ENABLE_PERFORMANCE_MEASUREMENT = 'TRUE' ] && zprof

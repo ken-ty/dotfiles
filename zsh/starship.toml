@@ -1,0 +1,53 @@
+# starship のプロンプト定義。.zshrc が STARSHIP_CONFIG でここを指す。
+# 出発点は導入前に見えていた macOS 既定 (/etc/zshrc) の `user@host dir %` と同じ並びで、
+# そこに git のブランチと状態を足したもの。Nerd Font は要らない記号だけを使う。
+# 書式: https://starship.rs/config/
+
+# プロンプト間に空行を入れない (導入前と同じ)
+add_newline = false
+
+# 出すものを列挙する。書いていないモジュール (言語のバージョン等) は出ない
+format = """
+$username\
+$hostname\
+$directory\
+$git_branch\
+$git_status\
+$character"""
+
+[username]
+# 導入前は常に出ていたので常に出す (starship の既定は root / ssh のときだけ)
+show_always = true
+format = '[$user]($style)@'
+style_user = 'green'
+style_root = 'red'
+
+[hostname]
+# ssh でなくても出す (starship の既定は ssh のときだけ)
+ssh_only = false
+format = '[$hostname]($style) '
+style = 'green'
+
+[directory]
+# 導入前 (%1~) と同じく末尾の 1 階層だけ。home は ~
+truncation_length = 1
+truncate_to_repo = false
+format = '[$path]($style)[$read_only]($read_only_style) '
+style = 'blue'
+read_only = ' (ro)'
+
+[git_branch]
+# Nerd Font の枝の記号を使わない
+symbol = ''
+format = '[$branch]($style) '
+style = 'purple'
+
+[git_status]
+# 記号は ASCII と矢印だけ: ⇡ ahead ⇣ behind + staged ! modified ? untracked = conflicted $ stashed
+format = '([\[$all_status$ahead_behind\]]($style) )'
+style = 'red'
+
+[character]
+# 導入前と同じ % を出し、直前のコマンドが失敗したときだけ赤くする
+success_symbol = '[%](green)'
+error_symbol = '[%](red)'
