@@ -1,4 +1,4 @@
-# desc: zsh の補完と入力候補 (zsh-autosuggestions / zsh-completions / zsh-git-prompt)
+# desc: zsh の補完・入力候補・プロンプト (zsh-autosuggestions / zsh-completions / starship)
 brew "zsh-autosuggestions"
 brew "zsh-completions"
-brew "zsh-git-prompt"
+brew "starship" # プロンプト。定義は zsh/starship.toml、.zshrc が init する

@@ -12,6 +12,7 @@ $HOME 配下に格納される設定ファイル群を git で管理するリポ
 | `.zshrc`               | zsh の設定                          |
 | `zsh/keybindings.conf` | zsh のキーバインドの表。「キーバインド」の節 |
 | `zsh/widgets/*.zsh`    | キーバインドから呼ぶ zle ウィジェット。1 関数 1 ファイル |
+| `zsh/starship.toml`    | プロンプト (starship) の定義。「プロンプト」の節 |
 | `.gitconfig`           | git の設定                          |
 | `vscode/settings.json` | VSCode の User 設定                 |
 | `.tool-versions`       | asdf で管理している各ツールのグローバルバージョン |
@@ -47,6 +48,28 @@ fzf 付属のバインド（`^T` `^R` `Alt+C` `Tab`）も同じ表に載せて�
 
 `~/.zsh-keybindings.local` は `keybindings.conf` より後に読まれる（後勝ち）ので、
 「リポジトリでは on、この機械では off」が成り立つ。
+
+## プロンプト
+
+プロンプトの見た目は `.zshrc` に書かず、[starship](https://starship.rs/) に任せて
+`zsh/starship.toml` で持つ。`.zshrc` が `STARSHIP_CONFIG` でこのファイルを指して
+`starship init zsh` を呼ぶので、`~/.config/starship.toml` は作らない。starship が
+入っていない機械では何もせず、macOS 既定の `user@host dir %` のまま。
+
+```
+apple@kenty-work-mac dotfiles main [!?] %
+```
+
+並びは既定のプロンプトと同じ `user@host dir %` で、git リポジトリの中ではブランチと
+状態 (`⇡` ahead `⇣` behind `+` staged `!` modified `?` untracked `=` conflicted `$` stashed)
+が間に入る。`%` は直前のコマンドが失敗すると赤くなる。Nerd Font は要らない
+(記号は ASCII と矢印だけ)。
+
+| やりたいこと | 手 |
+| --- | --- |
+| 出すものを増やす / 減らす | `zsh/starship.toml` の `format` に `$cmd_duration` などを足す・消す。モジュール一覧は https://starship.rs/config/ |
+| 表示を確かめる | `starship prompt` — 今のディレクトリでの 1 行を出す (`--status 1` で失敗時の色) |
+| 設定の間違いを探す | `starship config` はエディタで開くだけ。`starship explain` が各モジュールの中身を出す |
 
 ## MCP
 
@@ -149,7 +172,7 @@ bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (
 | チャンク | 中身 | 推奨 |
 | --- | --- | --- |
 | `core` | git / gh / ghq / fzf / jq / tree / tig / bw。`.zshrc` が前提にしている。`install.sh` が `~/.fzf.zsh` を作る (指す先が消えていれば作り直す) | ✓ |
-| `zsh` | zsh-autosuggestions / zsh-completions / zsh-git-prompt。`.zshrc` が前 2 つを読む。`install.sh` が compaudit を通す | ✓ |
+| `zsh` | zsh-autosuggestions / zsh-completions / starship。`.zshrc` が読む (starship は `zsh/starship.toml` を指して init)。`install.sh` が compaudit を通す | ✓ |
 | `node` | asdf と `.tool-versions` の nodejs | ✓ |
 | `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
 | `flutter` | asdf の flutter、xcodes CLI、openjdk、bundletool、Android Studio。JDK は brew の openjdk 1 本 | |
