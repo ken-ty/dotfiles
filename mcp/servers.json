@@ -30,17 +30,7 @@
     }
   ],
 
-  "project": [
-    {
-      "name": "UnityMCP",
-      "path": "$HOME/Desktop/huga/UnityMCPProject",
-      "note": "Unity Editor がローカルで待ち受けているときだけ繋がる。",
-      "config": {
-        "type": "http",
-        "url": "http://127.0.0.1:8080/mcp"
-      }
-    }
-  ],
+  "project": [],
 
   "connectors": {
     "$comment": [
