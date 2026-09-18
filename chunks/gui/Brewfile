@@ -17,3 +17,4 @@ cask "rectangle"          # ウィンドウ整列
 cask "stats"              # メニューバーのシステムモニタ
 cask "jordanbaird-ice@beta" # メニューバーの整理 (Ice.app)
 cask "logi-options+"      # Logicool のマウス/キーボード設定 (旧 Logi Options の後継)
+cask "font-jetbrains-mono" # ターミナルのフォント。zsh/starship.toml (Jetpack) の記号を全部持つ (Monaco は 46 個欠ける)。Terminal.app 側の切り替えは README「プロンプト」

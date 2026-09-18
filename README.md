@@ -56,19 +56,40 @@ fzf 付属のバインド（`^T` `^R` `Alt+C` `Tab`）も同じ表に載せて�
 `starship init zsh` を呼ぶので、`~/.config/starship.toml` は作らない。starship が
 入っていない機械では何もせず、macOS 既定の `user@host dir %` のまま。
 
+土台は公式プリセットの [Jetpack](https://starship.rs/presets/jetpack) で、左に `◎`、右に
+ディレクトリ・git・そのリポジトリで使うツール・時刻が出る 2 段の形。プリセットから変えた
+箇所は `zsh/starship.toml` の `# jetpack:` コメントに理由がある (sudo と gcloud を切る、
+dart / nodejs を asdf の `.tool-versions` を読む custom に置き換える、main を隠さない、など)。
+
 ```
-apple@kenty-work-mac dotfiles main [!?] %
+                                                                        ▴167▿34
+◄ 4s ◎                    □ dotfiles △ feat/starship-modules:main⎪●◦◃◈⎥ 17:33
 ```
 
-並びは既定のプロンプトと同じ `user@host dir %` で、git リポジトリの中ではブランチと
-状態 (`⇡` ahead `⇣` behind `+` staged `!` modified `?` untracked `=` conflicted `$` stashed)
-が間に入る。`%` は直前のコマンドが失敗すると赤くなる。Nerd Font は要らない
-(記号は ASCII と矢印だけ)。
+上の行は作業ツリーの差分行数 (あるときだけ)。下の行の左は直前のコマンドの所要時間 (2 秒以上)
+と `◎` (失敗すると `○`)、右は `ディレクトリ △ ブランチ⎪状態⎥` に続いて、pubspec.yaml が
+あれば `flutter ◁◅ 3.47.0`、package.json があれば `node ◫ 24.15.0`、Dockerfile があれば
+`docker ◧ colima`。状態の記号は `▴│n│` ahead `▿│n│` behind `▪┤n│` staged `●◦` modified
+`◌◦` untracked `◃◈` stashed `◪◦` conflicted。ssh 先ではホスト名・IP・ユーザーが左に足される。
+
+**Nerd Font は要らないが、フォントは JetBrains Mono にする。** Jetpack の記号は Unicode の
+幾何記号で、Monaco はそのうち 46 個を持たない (他のフォントに逐次フォールバックして幅が
+ずれ、右プロンプトが崩れる)。JetBrains Mono は全部持つ。フォント自体は `chunks/gui` で
+入る。Terminal.app の切り替えは 1 コマンド:
+
+```sh
+osascript -e 'tell application "Terminal" to set font name of settings set "Pro" to "JetBrainsMono-Regular"'
+```
+
+("Pro" は使っているプロファイル名。`defaults read com.apple.Terminal "Default Window Settings"`
+で分かる。画面でやるなら Terminal → 設定 → プロファイル → 左の一覧で Pro → テキストタブの
+フォント「変更...」)
 
 | やりたいこと | 手 |
 | --- | --- |
-| 出すものを増やす / 減らす | `zsh/starship.toml` の `format` に `$cmd_duration` などを足す・消す。モジュール一覧は https://starship.rs/config/ |
-| 表示を確かめる | `starship prompt` — 今のディレクトリでの 1 行を出す (`--status 1` で失敗時の色) |
+| 出すものを増やす / 減らす | `zsh/starship.toml` の `format` (左) / `right_format` (右) に `$cmd_duration` などを足す・消す。モジュール一覧は https://starship.rs/config/ |
+| 表示を確かめる | `starship prompt` (左) と `starship prompt --right` (右)。`--status 1` で失敗時の色 |
+| 遅くなっていないか | `starship timings` — モジュールごとの所要時間。足したものが 50ms を超えたら切るか custom で軽くする |
 | 設定の間違いを探す | `starship config` はエディタで開くだけ。`starship explain` が各モジュールの中身を出す |
 
 ## MCP
