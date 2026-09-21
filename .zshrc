@@ -57,6 +57,8 @@ export PATH="/opt/homebrew/bin:$PATH"
   [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
   # maestro (モバイル E2E)
   [ -d "$HOME/.maestro/bin" ] && export PATH="$PATH:$HOME/.maestro/bin"
+  # ntn (Notion CLI, chunks/notion)。公式 script が ~/.local/bin に置く。uv の env が無い機械でも通るように
+  [ -x "$HOME/.local/bin/ntn" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$PATH:$HOME/.local/bin" ;; esac
 # }}} バージョン管理ツールの読み込み ここまで
 
 # コマンド追加 ここから {{{
