@@ -177,6 +177,18 @@ symlink 相当の「リポジトリを直せば即反映」を得ている。既
 **`Ctrl+]` が届かないターミナル設定がある。** 反応しなければ `g` で運用するか、
 profile の `-Chord` を書き換える。
 
+**ExecutionPolicy が `Restricted` だと `$PROFILE` はそもそも読み込まれない。**
+Windows クライアントの既定がこれ。`install.ps1` 自身は `-ExecutionPolicy Bypass` で
+起動するため気付けず、「配線したのに次回以降ずっと無効」になる。Step 7 が検査して
+案内するが、直すのは手動:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+**変更後は新しいターミナルを開く。** 既に開いているシェルは起動時のポリシーのまま。
+ポリシーはシェル起動時に読まれるので、既存のタブでは何をしても profile は載らない。
+
 profile に日本語コメントを書くなら **UTF-8 BOM 付きで保存する**。PowerShell 5.1 は
 BOM 無しを CP932 として読むため、BOM を落とすとコメントが化けて構文エラーになる。
 
