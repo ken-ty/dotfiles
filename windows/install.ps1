@@ -2,7 +2,7 @@
 #
 # Windows 用のブートストラップ。install.sh (Mac / Ubuntu) の対応物。
 #
-#   powershell -ExecutionPolicy Bypass -File install.ps1
+#   powershell -ExecutionPolicy Bypass -File windows\install.ps1
 #
 # 「git を入れる」から「Claude Code でスキルが有効になる」までを一本で通す。
 # 2026-08-08 に Windows 11 で実際に踏んだ手順と地雷を、そのまま写したもの。
@@ -277,7 +277,7 @@ Write-Host "==================================="
 # symlink は張らない方針なので、$PROFILE には「リポジトリ側を dot-source する 1 行」だけを
 # 置く。コピーと違い、リポジトリを直した時点で反映され、再実行が要らない。
 # 既存の $PROFILE は上書きせず追記する。
-$profileSrc = Join-Path $PSScriptRoot 'windows\Microsoft.PowerShell_profile.ps1'
+$profileSrc = Join-Path $PSScriptRoot 'Microsoft.PowerShell_profile.ps1'
 if (-not (Test-Path $profileSrc)) {
     Write-Warning "  not found: $profileSrc"
 } else {

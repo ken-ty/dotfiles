@@ -3,94 +3,39 @@
 $HOME 配下に格納される設定ファイル群を git で管理するリポジトリです。  
 シェルやエディタの設定から、アプリケーション設定、環境構築用スクリプトまでを一元管理します。
 
----
+**OS ごとの説明はそれぞれの README に分けてあります。** この README には OS を問わない
+ことだけを書きます。
 
-## 管理しているもの
-
-| ファイル名              | 説明                                 |
-| ----------------------- | ------------------------------------ |
-| `.zshrc`               | zsh の設定                          |
-| `zsh/keybindings.conf` | zsh のキーバインドの表。「キーバインド」の節 |
-| `zsh/widgets/*.zsh`    | キーバインドから呼ぶ zle ウィジェット。1 関数 1 ファイル |
-| `zsh/starship.toml`    | プロンプト (starship) の定義。「プロンプト」の節 |
-| `.gitconfig`           | git の設定                          |
-| `vscode/settings.json` | VSCode の User 設定                 |
-| `.tool-versions`       | asdf で管理している各ツールのグローバルバージョン |
-| `chunks/<名前>/Brewfile` | Homebrew で入れるものを技術のひと塊 (チャンク) ごとに分けたもの。「チャンク」の節 |
-| `mcp/servers.json`     | Claude Code に繋ぐ MCP サーバの宣言   |
-| `macos/defaults.sh`    | macOS のシステム設定 (defaults)。Spaces の並びなど |
+| OS | 入口 | 説明 |
+| --- | --- | --- |
+| macOS (と Ubuntu) | `install.sh` | [`macos/README.md`](macos/README.md) |
+| Windows | `windows/install.ps1` | [`windows/README.md`](windows/README.md) |
 
 ---
 
-## キーバインド
+## 構成
 
-zsh のキーバインドは `.zshrc` に直書きせず、`zsh/keybindings.conf` の表で持つ。
-1 行 1 バインド、`空白区切り + # コメント`（fstab と同じ書式）。zsh の `read` で
-読めるので jq も yq も要らない。
+OS 固有のものは `macos/` と `windows/` に置き、それ以外 (直下) は OS を問わず使うものです。
 
-```
-# key    widget               state  説明
-^]       cd-ghq-list--fzf     on     ghq のリポジトリを fzf で選んで cd
-^R       fzf-history-widget   on     fzf 付属: 履歴を fzf で検索
-^T       fzf-file-widget      on     fzf 付属: ファイルを選んで挿入
-```
+| 置き場所 | 対象 | 中身 |
+| --- | --- | --- |
+| `macos/` | macOS | Homebrew のチャンク (`chunks/`)、システム設定 (`defaults.sh`) |
+| `windows/` | Windows | ブートストラップ (`install.ps1`)、PowerShell の profile |
+| `git/` | 共通 | git の設定 |
+| `vscode/` | 共通 | VSCode の User 設定と拡張機能の一覧 |
+| `mcp/` | 共通 | Claude Code に繋ぐ MCP サーバの宣言 |
+| `install.sh` `.zshrc` `zsh/` `asdf/` | macOS / Ubuntu | 直下に残している理由は [`macos/README.md`](macos/README.md) の冒頭 |
 
-fzf 付属のバインド（`^T` `^R` `Alt+C` `Tab`）も同じ表に載せてあるので、そこで
-`off` にすれば外れる。widget の実体は `zsh/widgets/<name>.zsh`（dotfiles 自前）か
-`fzf --zsh`（fzf 付属）。
+**新しく足すときは、まずどの OS で使うかを決めて置き場所を選ぶ。** 片方の OS でしか
+使わないものを直下に置かない。説明もその OS の README に書く。
 
-| やりたいこと | 手 |
-| --- | --- |
-| 一覧を見る | `keybind list` — 表と、実際に `bindkey` されているか（`bound` / `no-widget`）を並べて出す |
-| この機械だけ切る / 入れる | `keybind off '^T'` / `keybind on '^T'` — 即反映して `~/.zsh-keybindings.local` に書く（git 管理外） |
-| 全機械で変える | `keybind edit` → `keybindings.conf` を直す → commit |
-| キーを変える | 表の 1 列目を書き換える |
+---
 
-`~/.zsh-keybindings.local` は `keybindings.conf` より後に読まれる（後勝ち）ので、
-「リポジトリでは on、この機械では off」が成り立つ。
+## Git
 
-## プロンプト
-
-プロンプトの見た目は `.zshrc` に書かず、[starship](https://starship.rs/) に任せて
-`zsh/starship.toml` で持つ。`.zshrc` が `STARSHIP_CONFIG` でこのファイルを指して
-`starship init zsh` を呼ぶので、`~/.config/starship.toml` は作らない。starship が
-入っていない機械では何もせず、macOS 既定の `user@host dir %` のまま。
-
-土台は公式プリセットの [Jetpack](https://starship.rs/presets/jetpack) で、左に `◎`、右に
-ディレクトリ・git・そのリポジトリで使うツール・時刻が出る 2 段の形。プリセットから変えた
-箇所は `zsh/starship.toml` の `# jetpack:` コメントに理由がある (sudo と gcloud を切る、
-dart / nodejs を asdf の `.tool-versions` を読む custom に置き換える、main を隠さない、など)。
-
-```
-                                                                        ▴167▿34
-◄ 4s ◎                    □ dotfiles △ feat/starship-modules:main⎪●◦◃◈⎥ 17:33
-```
-
-上の行は作業ツリーの差分行数 (あるときだけ)。下の行の左は直前のコマンドの所要時間 (2 秒以上)
-と `◎` (失敗すると `○`)、右は `ディレクトリ △ ブランチ⎪状態⎥` に続いて、pubspec.yaml が
-あれば `flutter ◁◅ 3.47.0`、package.json があれば `node ◫ 24.15.0`、Dockerfile があれば
-`docker ◧ colima`。状態の記号は `▴│n│` ahead `▿│n│` behind `▪┤n│` staged `●◦` modified
-`◌◦` untracked `◃◈` stashed `◪◦` conflicted。ssh 先ではホスト名・IP・ユーザーが左に足される。
-
-**Nerd Font は要らないが、フォントは JetBrains Mono にする。** Jetpack の記号は Unicode の
-幾何記号で、Monaco はそのうち 46 個を持たない (他のフォントに逐次フォールバックして幅が
-ずれ、右プロンプトが崩れる)。JetBrains Mono は全部持つ。フォント自体は `chunks/gui` で
-入る。Terminal.app の切り替えは 1 コマンド:
-
-```sh
-osascript -e 'tell application "Terminal" to set font name of settings set "Pro" to "JetBrainsMono-Regular"'
-```
-
-("Pro" は使っているプロファイル名。`defaults read com.apple.Terminal "Default Window Settings"`
-で分かる。画面でやるなら Terminal → 設定 → プロファイル → 左の一覧で Pro → テキストタブの
-フォント「変更...」)
-
-| やりたいこと | 手 |
-| --- | --- |
-| 出すものを増やす / 減らす | `zsh/starship.toml` の `format` (左) / `right_format` (右) に `$cmd_duration` などを足す・消す。モジュール一覧は https://starship.rs/config/ |
-| 表示を確かめる | `starship prompt` (左) と `starship prompt --right` (右)。`--status 1` で失敗時の色 |
-| 遅くなっていないか | `starship timings` — モジュールごとの所要時間。足したものが 50ms を超えたら切るか custom で軽くする |
-| 設定の間違いを探す | `starship config` はエディタで開くだけ。`starship explain` が各モジュールの中身を出す |
+`git/.gitconfig` が共通の設定です。機械ごとに違うもの (credential helper など) は
+`git/.gitconfig.local` に書きます (`.gitignore` で追跡対象外)。張り方は OS ごとに違うので、
+それぞれの README を見てください。
 
 ## MCP
 
@@ -111,194 +56,6 @@ bash mcp/doctor.sh
 設定からは復元できません**。`install.sh` はチェックリストを出すだけで、認証は手動です。
 
 詳細は [`mcp/README.md`](mcp/README.md)。
-
-## macOS のシステム設定
-
-「システム設定」で手で触る項目のうち `defaults` で再現できるものを `macos/defaults.sh` に集めています。
-`install.sh` から呼ばれますが、単独でも流せます (冪等)。
-
-```bash
-bash macos/defaults.sh
-```
-
-いま入っているのは Mission Control の「操作スペースを最近使った順に自動で並べ替える」をオフにする 1 件です。
-これがオンだと、Cmd+Tab で別スペースのアプリへ飛ぶたびにスペースの並びが崩れます。
-
-詳細は [`macos/README.md`](macos/README.md)。
-
-## Usage
-
-このリポジトリをクローンし、dotfiles をセットアップするには以下のコマンドを実行します：
-
-```bash
-bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
-```
-
-### Windows
-
-`install.sh` は Mac / Ubuntu 専用（Git Bash から実行すると案内を出して止まる）。Windows は
-**`install.ps1`** を使う。
-
-```powershell
-git clone git@github.com:ken-ty/dotfiles.git
-powershell -ExecutionPolicy Bypass -File dotfiles\install.ps1
-```
-
-「git を入れる」から「Claude Code でスキルが有効になる」までを一本で通す:
-
-1. winget で Git / GitHub CLI / ghq / Node.js / fzf
-2. Discord（任意）
-3. `core.sshCommand` を Windows OpenSSH に向ける ── **非 ASCII のユーザ名では必須**。
-   これが無いと、鍵も登録も正しいのに `publickey` 拒否になる
-4. ed25519 鍵の生成 → 公開鍵を表示 → 登録待ち → `ssh -T` で疎通確認
-5. `gh auth status`（ログインはブラウザ対話なので手動）
-6. agent-skills / agent-skills-store を clone して配線
-7. `$PROFILE` に `windows/Microsoft.PowerShell_profile.ps1` を dot-source する 1 行を追記
-8. PSFzf（任意。Ctrl+r の履歴 fuzzy search に要る）
-
-**symlink の権限が無ければ、6 で失敗せずに打つべきコマンドを表示して飛ばす。**
-開発者モードか sudo のどちらかを有効にして再実行すれば、そこだけ進む。
-
-`install.sh` と違い**設定ファイルの symlink は張らない**（Windows は symlink に特権が要り、
-`.zshrc` も使わないため）。共通化は後回しにしてある。
-PowerShell profile だけは、`$PROFILE` に dot-source の 1 行を追記することで
-symlink 相当の「リポジトリを直せば即反映」を得ている。既存の `$PROFILE` は上書きしない。
-
-#### PowerShell の fzf 連携
-
-`.zshrc` の fzf まわりと同じ操作感を Windows にも用意してある。
-
-| キー | 動作 | 対応する `.zshrc` |
-| --- | --- | --- |
-| `Ctrl+]` | `ghq list -p` を fzf で絞り込んで移動 | `cd-ghq-list--fzf` |
-| `Ctrl+r` | コマンド履歴を fzf で絞り込み | `fzf-select-history` |
-| `g` | `Ctrl+]` と同じ（エイリアス） | — |
-
-**`Ctrl+]` が届かないターミナル設定がある。** 反応しなければ `g` で運用するか、
-profile の `-Chord` を書き換える。
-
-**ExecutionPolicy が `Restricted` だと `$PROFILE` はそもそも読み込まれない。**
-Windows クライアントの既定がこれ。`install.ps1` 自身は `-ExecutionPolicy Bypass` で
-起動するため気付けず、「配線したのに次回以降ずっと無効」になる。Step 7 が検査して
-案内するが、直すのは手動:
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
-
-**変更後は新しいターミナルを開く。** 既に開いているシェルは起動時のポリシーのまま。
-ポリシーはシェル起動時に読まれるので、既存のタブでは何をしても profile は載らない。
-
-profile に日本語コメントを書くなら **UTF-8 BOM 付きで保存する**。PowerShell 5.1 は
-BOM 無しを CP932 として読むため、BOM を落とすとコメントが化けて構文エラーになる。
-
-#### 文字コード
-
-**PowerShell 5.1 の `$OutputEncoding` の既定は `ASCIIEncoding`。** ネイティブコマンド
-同士をパイプすると PowerShell が間で文字列を再エンコードするため、非 ASCII がすべて
-`?` に潰れる。profile でこれを UTF-8 に固定している。
-
-表示が崩れるだけではない。**読んで書き戻す経路に乗せるとデータが壊れる**:
-
-```powershell
-bw get item $id | jq ... | bw edit item $id   # notes の日本語が ??? で保存される
-```
-
-`[Console]::OutputEncoding` は utf-8 なのに `$OutputEncoding` だけが ASCII、という
-非対称なので気づきにくい。`powershell -NoProfile` で再現する。
-
-**BOM 無しを明示するのが要点。** `[System.Text.Encoding]::UTF8` は preamble を持つので、
-そのまま使うとネイティブコマンドの stdin 先頭に BOM (U+FEFF) が載り、受け側の JSON
-パースが落ちる。
-
-関連して PS 5.1 で踏むもの:
-
-- `jq -r '.[] | "\(.id) \(.name)"'` の**ダブルクォートは PS が食う**。
-  `'.[] | [.id,.name] | @tsv'` のように書けば通る
-- **環境変数経由で非 ASCII をネイティブ exe に渡すと ANSI で渡り化ける**（`ñ` → `n`）。
-  `jq --arg` は化けない
-- `... | bw encode` のような**パイプ経由の base64 化は BOM が混ざる**。
-  `[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($json))` で避ける
-
-コンソールが 65001 でも**システム ACP が 932** なら、別のターミナルや別マシンでは 932 で
-開きうる。profile で毎回固定するのはそのため。
-
-詰まりどころの詳細は `my-windows-setup` スキル
-（[agent-skills-store](https://github.com/ken-ty/agent-skills-store)）にある。
-
-### このコマンドが行う処理
-
-1. `$HOME/dotfiles` にリポジトリを `git clone` (git が無ければ tarball)。**すでに git checkout があればそのまま使う** (ghq 配下への symlink でもよい)
-2. 設定ファイルのシンボリックリンクを作成。既存のファイルは `$HOME/dotfiles_backup` に退避。すでに同じ場所を指していれば何もしない
-3. Homebrew が無ければ入れ、**チャンク** (下記) を選んで `brew bundle`
-4. macOS の `defaults` (任意)
-
-何度実行しても同じ結果になります。`$HOME/dotfiles` が git checkout でないディレクトリのときだけ止まるので、
-そのときは退避してから再実行してください。
-
-```bash
-bash install.sh                            # 対話。設定ファイルは 1 つずつ聞き、チャンクは 3 択
-bash install.sh --mode recommended --yes   # 何も聞かない。サーバー向け
-bash install.sh --mode full                # 全チャンク
-bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (推奨のものは既定 Y)
-```
-
-> **`install.sh` は AI エージェントのスキルを扱いません。** 以前は `ai-skills` を clone して
-> いましたが、そのリポジトリは保守されていないため落としました。スキルが要るなら
-> [agent-skills](https://github.com/ken-ty/agent-skills) を別途入れてください。
-> Windows の `install.ps1` は Step 6 でそこまで面倒を見ます（sh 側との共通化は未着手）。
-
-### チャンク
-
-技術を 1 塊ごとに `chunks/<名前>/` に分けてあります。`Brewfile` (何を入れるか) と、任意の `install.sh`
-(入れた後の 1 手。asdf のプラグインや fzf のキーバインドなど)。`Brewfile` 1 行目の `# desc:` が一覧に出ます。
-
-| チャンク | 中身 | 推奨 |
-| --- | --- | --- |
-| `core` | git / gh / ghq / fzf / jq / tree / tig / bw。`.zshrc` が前提にしている。`install.sh` が `~/.fzf.zsh` を作る (指す先が消えていれば作り直す) | ✓ |
-| `zsh` | zsh-autosuggestions / zsh-completions / starship。`.zshrc` が読む (starship は `zsh/starship.toml` を指して init)。`install.sh` が compaudit を通す | ✓ |
-| `node` | asdf と `.tool-versions` の nodejs | ✓ |
-| `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
-| `flutter` | asdf の flutter、xcodes CLI、openjdk、bundletool、Android Studio。JDK は brew の openjdk 1 本 | |
-| `media` | ffmpeg / graphviz / librsvg / webp / avif など | |
-| `langs` | php / python / rbenv / yarn / chezmoi / .NET SDK | |
-| `gui` | 日常の GUI アプリ (Chrome / Slack / Discord / Notion / Spotify / Claude / Arq / Adobe CC / Rectangle / Stats / Ice …) | |
-| `devtools` | 開発向けの GUI と SDK (vagrant / virtualbox / Postman / ngrok / tuist / XQuartz / codex) | |
-| `mas` | App Store のアプリ (`mas`)。Bitwarden / LINE / Excel / Kindle / Brother の印刷系など | |
-| `vscode` | VSCode 本体 (cask) と拡張機能 | |
-
-推奨 (`--mode recommended`) は `chunks/recommended` に列挙したもの。サーバーには推奨だけ入れ、
-開発機は full か select で足します。チャンクを足すときはディレクトリを 1 つ作るだけで一覧に出ます。
-
----
-
-## インストール後の必要手順
-
-インストール後、環境を有効にするために以下のコマンドを実行してください：
-
-### 1. zshrc の再読み込み
-
-```bash
-source $HOME/.zshrc
-```
-
-### 2. gitconfig.local
-
-秘匿情報や機械ごとに違う Git 設定 (`gh auth setup-git` が書く credential helper など) は
-`git/.gitconfig.local` に書きます。`.gitignore` で追跡対象外です。
-
-`install.sh` が空のファイルを作って `~/.gitconfig.local` に symlink します。
-`.gitconfig` の `include.path = .gitconfig.local` は **`~/.gitconfig` からの相対で解決され、
-symlink を辿らない** ので、`git/.gitconfig.local` に書いただけでは読まれません
-(2026-09-14 に mini で実測。MBP も同じ状態で、読まれていなかった)。
-
-### 3. VSCode の拡張機能インポート
-
-必要に応じて、VSCode の拡張機能をインポートします：
-
-```bash
-source $HOME/dotfiles/vscode/my_vscode_extensions.sh
-```
 
 ---
 

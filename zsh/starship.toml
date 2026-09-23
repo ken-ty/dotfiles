@@ -2,7 +2,7 @@
 # 土台は公式プリセット Jetpack (version 1.0.0、`starship preset jetpack` が出すもの)。
 #   https://starship.rs/presets/jetpack
 # Jetpack は Nerd Font を使わず Unicode の幾何記号だけで描く。ただし Monaco はその記号を
-# ほとんど持たないので、ターミナルのフォントは JetBrains Mono (chunks/gui) にする。
+# ほとんど持たないので、ターミナルのフォントは JetBrains Mono (macos/chunks/gui) にする。
 # 右プロンプト (right_format) を使うので zsh の RPROMPT に載る。
 #
 # プリセットから変えた箇所には「# jetpack:」で理由を書いてある。それ以外はプリセットのまま。
