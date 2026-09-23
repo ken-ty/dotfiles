@@ -37,6 +37,11 @@ OS 固有のものは `macos/` と `windows/` に置き、それ以外 (直下) 
 `git/.gitconfig.local` に書きます (`.gitignore` で追跡対象外)。張り方は OS ごとに違うので、
 それぞれの README を見てください。
 
+`git/ignore` はグローバル gitignore で、全リポジトリで無視するもの
+(`.claude/settings.local.json`、`CLAUDE.local.md`) を書きます。git が既定で読む
+`~/.config/git/ignore` に `install.sh` が symlink するので、`.gitconfig` に
+`core.excludesfile` は書きません。Windows の `install.ps1` はまだ張りません。
+
 ## MCP
 
 Claude Code に繋ぐ MCP サーバを `mcp/servers.json` で宣言的に管理しています。
