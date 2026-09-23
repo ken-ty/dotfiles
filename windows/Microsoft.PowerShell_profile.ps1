@@ -11,6 +11,30 @@
 #       コメントが化けて構文エラーになる。PowerShell 7 では不要。
 
 # ---------------------------------------------
+# 文字コード
+# ---------------------------------------------
+# **PowerShell 5.1 の $OutputEncoding の既定は ASCIIEncoding。** ネイティブコマンド
+# 同士をパイプすると PowerShell が間で文字列を再エンコードするため、非 ASCII が
+# すべて "?" に潰れる。表示が崩れるだけではない ── 読んで書き戻す経路に乗せると
+# **データが壊れる**:
+#
+#   bw list items --search x | jq -r $jq        ->  secret/...  ????
+#   bw get item $id | jq ... | bw edit item $id ->  notes の日本語が ??? で保存される
+#
+# BOM 無しを明示するのが要点。[System.Text.Encoding]::UTF8 は preamble を持つので、
+# ネイティブコマンドの stdin 先頭に BOM (U+FEFF) が載り、受け側の JSON.parse が落ちる。
+$OutputEncoding = New-Object System.Text.UTF8Encoding($false)
+
+# 受け取り側 ── ネイティブコマンドの stdout をどう解釈するか。
+# このマシンのコンソールは既に 65001 だが、**システム ACP は 932** なので、別の
+# ターミナルや別マシンでは 932 で開きうる。そこで明示しておく。
+# 代償として CP932 で出力する旧いツールの日本語は化けるが、開発ツール
+# (git / gh / bw / jq / node) はすべて UTF-8 なのでこちらを取る。
+#
+# コンソールを持たないホストでは throw するので、profile 全体を止めないよう握る。
+try { [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($false) } catch { }
+
+# ---------------------------------------------
 # ghq + fzf
 # ---------------------------------------------
 # ghq list -p はバックスラッシュ区切りで返すが、Set-Location はそのまま受ける。
