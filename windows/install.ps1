@@ -56,6 +56,17 @@ function Invoke-Native([scriptblock]$block) {
     finally { $ErrorActionPreference = $prev }
 }
 
+function Get-PersistedExecutionPolicy {
+    # Process スコープを除いた実効ポリシー。install.ps1 は -ExecutionPolicy Bypass で
+    # 起動するので Get-ExecutionPolicy をそのまま呼ぶと常に Bypass に見え、
+    # 「$PROFILE が読み込まれない」状態を検出できない。
+    foreach ($scope in 'MachinePolicy', 'UserPolicy', 'CurrentUser', 'LocalMachine') {
+        $p = Get-ExecutionPolicy -Scope $scope
+        if ($p -ne 'Undefined') { return $p }
+    }
+    return 'Restricted'   # すべて未定義なら Windows クライアントの既定
+}
+
 function Test-SymlinkPrivilege {
     # 実際に 1 本張ってみる以外に確実な判定は無い。開発者モード ON でも、昇格済みでも、
     # どちらでも通る ── 「いま symlink を張れるか」だけを見たいのでこれでよい。
@@ -283,6 +294,23 @@ if (-not (Test-Path $profileSrc)) {
         Write-Host "  wired   `$PROFILE -> $profileSrc"
     }
     Write-Host "  `$PROFILE = $PROFILE"
+
+    # 配線しただけでは足りない。ExecutionPolicy が Restricted だと $PROFILE は
+    # 読み込まれず、しかも install.ps1 自身は Bypass で動くので気付けない。
+    # 「入れたのに次回以降ずっと無効」になるので、ここで必ず検査する。
+    # 2026-09-23 に Windows 11 で実際に踏んだ。
+    $ep = Get-PersistedExecutionPolicy
+    if ($ep -in @('Restricted', 'AllSigned')) {
+        Write-Host ""
+        Write-Warning "  ExecutionPolicy is $ep - `$PROFILE will NOT be loaded."
+        Write-Host ""
+        Write-Host "  Run this yourself (no admin needed):"
+        Write-Host "    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned"
+        Write-Host ""
+        Write-Host "  Then open a NEW terminal. Already-open shells keep the old policy."
+    } else {
+        Write-Host "  ok      ExecutionPolicy = $ep"
+    }
 }
 
 # -----------------------------------------------

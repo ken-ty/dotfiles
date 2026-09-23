@@ -38,6 +38,25 @@ powershell -ExecutionPolicy Bypass -File dotfiles\windows\install.ps1
 PowerShell profile だけは、`$PROFILE` に dot-source の 1 行を追記することで
 symlink 相当の「リポジトリを直せば即反映」を得ている。既存の `$PROFILE` は上書きしない。
 
+## ExecutionPolicy
+
+**`Restricted` だと `$PROFILE` はそもそも読み込まれない。** Windows クライアントの
+既定がこれ。下の fzf 連携も文字コードの修正も、profile に書いてある以上まとめて効かない。
+
+質が悪いのは、`install.ps1` 自身が `-ExecutionPolicy Bypass` で起動するため
+**スクリプトの中からは気付けない**こと。`Get-ExecutionPolicy` は常に `Bypass` を返す。
+結果として「配線は成功したと表示されるのに、次回以降ずっと無効」になる。
+Step 7 が Process スコープを除いた実効ポリシーを見て検査するが、直すのは手動:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+管理者権限は要らない。`Bypass` まで緩める必要もない。
+
+**変更後は新しいターミナルを開く。** ポリシーはシェル起動時に読まれるので、
+既に開いているタブでは直しても profile は載らない。
+
 ## PowerShell の fzf 連携
 
 `.zshrc` の fzf まわりと同じ操作感を Windows にも用意してある。
