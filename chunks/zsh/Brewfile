@@ -1,4 +1,0 @@
-# desc: zsh の補完と入力候補 (zsh-autosuggestions / zsh-completions / zsh-git-prompt)
-brew "zsh-autosuggestions"
-brew "zsh-completions"
-brew "zsh-git-prompt"

@@ -50,8 +50,8 @@ export PATH="/opt/homebrew/bin:$PATH"
   # # android path 追加
   # export PATH=$PATH:/Users/apple/Library/Android/sdk/platform-tools
 
-  # 以下は入っている機械でだけ効く。無ければ何もしない (chunks で入れるもの / 手で入れるもの)
-  # openjdk (chunks/flutter)。`brew --prefix` を毎回呼ぶと起動が遅くなるのでパスは決め打ち
+  # 以下は入っている機械でだけ効く。無ければ何もしない (macos/chunks で入れるもの / 手で入れるもの)
+  # openjdk (macos/chunks/flutter)。`brew --prefix` を毎回呼ぶと起動が遅くなるのでパスは決め打ち
   [ -d /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home ] && export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
   # uv (Python)。installer が置く env を読む
   [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
@@ -61,7 +61,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 
 # コマンド追加 ここから {{{
 
-  # 補完と入力候補 (chunks/zsh で入る。入っていない機械では何もしない)
+  # 補完と入力候補 (macos/chunks/zsh で入る。入っていない機械では何もしない)
   # zsh-completions: 補完定義を fpath に足してから compinit を呼ぶ順序が必須
   [ -d /opt/homebrew/share/zsh-completions ] && fpath=(/opt/homebrew/share/zsh-completions $fpath)
   autoload -Uz compinit && compinit
@@ -118,6 +118,16 @@ export PATH="/opt/homebrew/bin:$PATH"
   # エージェントやスクリプトが短命な zsh を大量に起動すると 1 回 1 秒の税になる。
   # 遊びたいときは手で `tomatomato` と打つ。
 # }}}  zsh 終了時に呼び出す関数を登録する ここまで
+
+# プロンプト ここから {{{
+  # 見た目は starship (macos/chunks/zsh で入る) に任せる。定義は zsh/starship.toml。
+  # 入っていない機械では macOS 既定の `user@host dir %` のまま (何も壊れない)。
+  # 公式の案内どおり .zshrc の末尾で init する: https://starship.rs/guide/
+  if command -v starship >/dev/null; then
+    export STARSHIP_CONFIG="${${(%):-%N}:A:h}/zsh/starship.toml"
+    eval "$(starship init zsh)"
+  fi
+# }}} プロンプト ここまで
 
 # パフォーマンス計測 終了
 [ $ENABLE_PERFORMANCE_MEASUREMENT = 'TRUE' ] && zprof
