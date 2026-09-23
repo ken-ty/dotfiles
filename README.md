@@ -91,6 +91,37 @@ profile の `-Chord` を書き換える。
 profile に日本語コメントを書くなら **UTF-8 BOM 付きで保存する**。PowerShell 5.1 は
 BOM 無しを CP932 として読むため、BOM を落とすとコメントが化けて構文エラーになる。
 
+#### 文字コード
+
+**PowerShell 5.1 の `$OutputEncoding` の既定は `ASCIIEncoding`。** ネイティブコマンド
+同士をパイプすると PowerShell が間で文字列を再エンコードするため、非 ASCII がすべて
+`?` に潰れる。profile でこれを UTF-8 に固定している。
+
+表示が崩れるだけではない。**読んで書き戻す経路に乗せるとデータが壊れる**:
+
+```powershell
+bw get item $id | jq ... | bw edit item $id   # notes の日本語が ??? で保存される
+```
+
+`[Console]::OutputEncoding` は utf-8 なのに `$OutputEncoding` だけが ASCII、という
+非対称なので気づきにくい。`powershell -NoProfile` で再現する。
+
+**BOM 無しを明示するのが要点。** `[System.Text.Encoding]::UTF8` は preamble を持つので、
+そのまま使うとネイティブコマンドの stdin 先頭に BOM (U+FEFF) が載り、受け側の JSON
+パースが落ちる。
+
+関連して PS 5.1 で踏むもの:
+
+- `jq -r '.[] | "\(.id) \(.name)"'` の**ダブルクォートは PS が食う**。
+  `'.[] | [.id,.name] | @tsv'` のように書けば通る
+- **環境変数経由で非 ASCII をネイティブ exe に渡すと ANSI で渡り化ける**（`ñ` → `n`）。
+  `jq --arg` は化けない
+- `... | bw encode` のような**パイプ経由の base64 化は BOM が混ざる**。
+  `[Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($json))` で避ける
+
+コンソールが 65001 でも**システム ACP が 932** なら、別のターミナルや別マシンでは 932 で
+開きうる。profile で毎回固定するのはそのため。
+
 詰まりどころの詳細は `my-windows-setup` スキル
 （[agent-skills-store](https://github.com/ken-ty/agent-skills-store)）にある。
 
