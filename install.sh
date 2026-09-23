@@ -7,12 +7,12 @@
 # backup から復元可能ですが、複数回実行すると上書きされるため注意。
 #
 #   bash install.sh                        # 対話。設定ファイルは 1 つずつ聞き、チャンクは 3 択
-#   bash install.sh --mode recommended     # 推奨チャンクだけ (chunks/recommended)
+#   bash install.sh --mode recommended     # 推奨チャンクだけ (macos/chunks/recommended)
 #   bash install.sh --mode full            # 全チャンク
 #   bash install.sh --mode select          # チャンクを 1 つずつ選ぶ
 #   bash install.sh --mode recommended --yes   # 何も聞かない (サーバー向け)
 #
-# チャンクは chunks/<名前>/Brewfile (+ 任意の install.sh)。1 行目の "# desc:" が一覧に出る。
+# チャンクは macos/chunks/<名前>/Brewfile (+ 任意の install.sh)。1 行目の "# desc:" が一覧に出る。
 
 set -eu
 
@@ -100,7 +100,7 @@ get_os_name() {
 case "$(uname -s 2>/dev/null || echo unknown)" in
     MINGW*|MSYS*|CYGWIN*)
         error_exit "0102" "This is Windows" \
-        "Use the PowerShell installer instead:\n\n    powershell -ExecutionPolicy Bypass -File install.ps1"
+        "Use the PowerShell installer instead:\n\n    powershell -ExecutionPolicy Bypass -File windows/install.ps1"
         ;;
 esac
 
@@ -133,17 +133,17 @@ backup_and_link() {
 }
 
 # chunk_desc: チャンクの説明 (Brewfile 1 行目の "# desc:")
-chunk_desc() { sed -n '1s/^# desc: *//p' "$DOT_DIR/chunks/$1/Brewfile"; }
+chunk_desc() { sed -n '1s/^# desc: *//p' "$DOT_DIR/macos/chunks/$1/Brewfile"; }
 
-# all_chunks: chunks/ 配下の全チャンク名 (アルファベット順)
-all_chunks() { find "$DOT_DIR/chunks" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort; }
+# all_chunks: macos/chunks/ 配下の全チャンク名 (アルファベット順)
+all_chunks() { find "$DOT_DIR/macos/chunks" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort; }
 
 # install_chunk: Brewfile を bundle し、install.sh があれば実行する
 install_chunk() {
     local c=$1
     echo "----- chunk: $c — $(chunk_desc "$c")"
-    brew bundle --file="$DOT_DIR/chunks/$c/Brewfile"
-    [ -f "$DOT_DIR/chunks/$c/install.sh" ] && bash "$DOT_DIR/chunks/$c/install.sh"
+    brew bundle --file="$DOT_DIR/macos/chunks/$c/Brewfile"
+    [ -f "$DOT_DIR/macos/chunks/$c/install.sh" ] && bash "$DOT_DIR/macos/chunks/$c/install.sh"
     return 0
 }
 
@@ -201,6 +201,9 @@ backup_and_link "$DOT_DIR/git/.gitconfig" "$HOME/.gitconfig" "Git config"
 # ~/.gitconfig.local も張る。中身は機械ごと (gh の credential helper など)。無ければ空で作る
 [ -e "$DOT_DIR/git/.gitconfig.local" ] || touch "$DOT_DIR/git/.gitconfig.local"
 backup_and_link "$DOT_DIR/git/.gitconfig.local" "$HOME/.gitconfig.local" "Git config (local)"
+# グローバル gitignore。~/.config/git/ignore は git が既定で読む場所 (XDG) なので
+# .gitconfig に core.excludesfile は書かない
+backup_and_link "$DOT_DIR/git/ignore" "$HOME/.config/git/ignore" "Git global ignore"
 
 # VSCode の設定 (--yes のときは飛ばす。サーバーに VSCode は無い)
 if ! $YES; then
@@ -231,7 +234,7 @@ fi
 if has brew; then
     if [ -z "$MODE" ]; then
         echo "How much do you want to install?"
-        echo "  1) recommended — $(tr '\n' ' ' < "$DOT_DIR/chunks/recommended")"
+        echo "  1) recommended — $(tr '\n' ' ' < "$DOT_DIR/macos/chunks/recommended")"
         echo "  2) full        — $(all_chunks | tr '\n' ' ')"
         echo "  3) select      — 1 つずつ選ぶ"
         echo "  n) skip"
@@ -245,12 +248,12 @@ if has brew; then
     fi
     chunks=""
     case "$MODE" in
-        recommended) chunks=$(cat "$DOT_DIR/chunks/recommended") ;;
+        recommended) chunks=$(cat "$DOT_DIR/macos/chunks/recommended") ;;
         full) chunks=$(all_chunks) ;;
         select)
             for c in $(all_chunks); do
                 default=n
-                grep -qx "$c" "$DOT_DIR/chunks/recommended" && default=y
+                grep -qx "$c" "$DOT_DIR/macos/chunks/recommended" && default=y
                 echo "  $c — $(chunk_desc "$c")"
                 prompt_setup "chunk $c" "$default" && chunks="$chunks $c"
             done

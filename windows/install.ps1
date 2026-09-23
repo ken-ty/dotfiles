@@ -2,7 +2,7 @@
 #
 # Windows 用のブートストラップ。install.sh (Mac / Ubuntu) の対応物。
 #
-#   powershell -ExecutionPolicy Bypass -File install.ps1
+#   powershell -ExecutionPolicy Bypass -File windows\install.ps1
 #
 # 「git を入れる」から「Claude Code でスキルが有効になる」までを一本で通す。
 # 2026-08-08 に Windows 11 で実際に踏んだ手順と地雷を、そのまま写したもの。
@@ -11,8 +11,9 @@
 # install.sh との違いは意図的:
 #
 #   - **設定ファイルの symlink は張らない。** Windows は symlink 作成に特権を要求するし、
-#     .zshrc は Windows で使わない。ここが担うのはツールの導入と配線まで
-#   - バックアップも作らない。触るのは git config だけ
+#     .zshrc は Windows で使わない。PowerShell profile だけは、$PROFILE に
+#     dot-source の 1 行を追記することで symlink 相当の「直せば即反映」を得ている
+#   - バックアップも作らない。触るのは git config と $PROFILE への 1 行追記だけ
 #
 # install.sh との共通化はまだしていない。まず Windows 単独で動くものを置く。
 #
@@ -53,6 +54,17 @@ function Invoke-Native([scriptblock]$block) {
     $ErrorActionPreference = 'Continue'
     try { & $block 2>&1 | ForEach-Object { "    $_" } }
     finally { $ErrorActionPreference = $prev }
+}
+
+function Get-PersistedExecutionPolicy {
+    # Process スコープを除いた実効ポリシー。install.ps1 は -ExecutionPolicy Bypass で
+    # 起動するので Get-ExecutionPolicy をそのまま呼ぶと常に Bypass に見え、
+    # 「$PROFILE が読み込まれない」状態を検出できない。
+    foreach ($scope in 'MachinePolicy', 'UserPolicy', 'CurrentUser', 'LocalMachine') {
+        $p = Get-ExecutionPolicy -Scope $scope
+        if ($p -ne 'Undefined') { return $p }
+    }
+    return 'Restricted'   # すべて未定義なら Windows クライアントの既定
 }
 
 function Test-SymlinkPrivilege {
@@ -114,6 +126,7 @@ Install-WinGet 'Git.Git'       'git'  'Git'
 Install-WinGet 'GitHub.cli'    'gh'   'GitHub CLI'
 Install-WinGet 'x-motemen.ghq' 'ghq'  'ghq'
 Install-WinGet 'OpenJS.NodeJS' 'node' 'Node.js'
+Install-WinGet 'junegunn.fzf'  'fzf'  'fzf'
 Sync-Path
 
 # -----------------------------------------------
@@ -255,6 +268,77 @@ if (Confirm-Step "agent-skills (skills for Claude Code and friends)") {
 }
 
 # -----------------------------------------------
+# Step 7: PowerShell profile
+# -----------------------------------------------
+Write-Host ""
+Write-Host "==================================="
+Write-Host "Step 7: PowerShell profile"
+Write-Host "==================================="
+# symlink は張らない方針なので、$PROFILE には「リポジトリ側を dot-source する 1 行」だけを
+# 置く。コピーと違い、リポジトリを直した時点で反映され、再実行が要らない。
+# 既存の $PROFILE は上書きせず追記する。
+$profileSrc = Join-Path $PSScriptRoot 'Microsoft.PowerShell_profile.ps1'
+if (-not (Test-Path $profileSrc)) {
+    Write-Warning "  not found: $profileSrc"
+} else {
+    $line     = ". `"$profileSrc`""
+    $existing = if (Test-Path $PROFILE) { Get-Content $PROFILE -Raw } else { '' }
+    if ($existing -and $existing.Contains($line)) {
+        Write-Host "  ok      `$PROFILE already sources the repo profile"
+    } else {
+        $profileDir = Split-Path $PROFILE -Parent
+        if (-not (Test-Path $profileDir)) {
+            New-Item -ItemType Directory -Path $profileDir -Force | Out-Null
+        }
+        Add-Content -Path $PROFILE -Value $line -Encoding UTF8
+        Write-Host "  wired   `$PROFILE -> $profileSrc"
+    }
+    Write-Host "  `$PROFILE = $PROFILE"
+
+    # 配線しただけでは足りない。ExecutionPolicy が Restricted だと $PROFILE は
+    # 読み込まれず、しかも install.ps1 自身は Bypass で動くので気付けない。
+    # 「入れたのに次回以降ずっと無効」になるので、ここで必ず検査する。
+    # 2026-09-23 に Windows 11 で実際に踏んだ。
+    $ep = Get-PersistedExecutionPolicy
+    if ($ep -in @('Restricted', 'AllSigned')) {
+        Write-Host ""
+        Write-Warning "  ExecutionPolicy is $ep - `$PROFILE will NOT be loaded."
+        Write-Host ""
+        Write-Host "  Run this yourself (no admin needed):"
+        Write-Host "    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned"
+        Write-Host ""
+        Write-Host "  Then open a NEW terminal. Already-open shells keep the old policy."
+    } else {
+        Write-Host "  ok      ExecutionPolicy = $ep"
+    }
+}
+
+# -----------------------------------------------
+# Step 8: PSFzf
+# -----------------------------------------------
+Write-Host ""
+Write-Host "==================================="
+Write-Host "Step 8: PSFzf (Ctrl+r history search)"
+Write-Host "==================================="
+# Ctrl+] (ghq 移動) は profile だけで足りる。Ctrl+r の履歴検索にはこのモジュールが要る。
+# 未導入でも profile は静かに飛ばすので、入れなくても壊れない。
+if (Get-Module PSFzf -ListAvailable) {
+    Write-Host "  ok      PSFzf already installed"
+} elseif (Confirm-Step "PSFzf (fuzzy history search on Ctrl+r)") {
+    [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+    Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Scope CurrentUser -Force | Out-Null
+    # PSGallery が Untrusted だと確認プロンプトが出る。一時的に信頼して、必ず戻す。
+    $policy = (Get-PSRepository -Name PSGallery).InstallationPolicy
+    Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+    try {
+        Install-Module PSFzf -Scope CurrentUser -Force -AllowClobber
+        Write-Host "  installed PSFzf"
+    } finally {
+        Set-PSRepository -Name PSGallery -InstallationPolicy $policy
+    }
+}
+
+# -----------------------------------------------
 # 残り
 # -----------------------------------------------
 Write-Host ""
@@ -265,6 +349,12 @@ Write-Host "These need a browser or a system setting - they cannot be scripted."
 Write-Host ""
 Write-Host "  1. gh auth login                 # if Step 5 said you are not logged in"
 Write-Host "  2. Symlink privilege - only if Step 6 told you so. It prints the commands."
+Write-Host "  3. Reopen the terminal, then check the fzf bindings:"
+Write-Host "       fzf --version"
+Write-Host "       g          # ghq repo picker"
+Write-Host "       Ctrl+]     # same, as a key binding"
+Write-Host "       Ctrl+r     # history search (needs Step 8)"
+Write-Host "     Ctrl+] does not reach every terminal. If it is dead, use g or rebind it."
 Write-Host ""
 Write-Host "Verify the end state from inside any repo (not from your home directory,"
 Write-Host "or doctor mistakes personal skills for project ones):"

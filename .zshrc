@@ -50,20 +50,20 @@ export PATH="/opt/homebrew/bin:$PATH"
   # # android path 追加
   # export PATH=$PATH:/Users/apple/Library/Android/sdk/platform-tools
 
-  # 以下は入っている機械でだけ効く。無ければ何もしない (chunks で入れるもの / 手で入れるもの)
-  # openjdk (chunks/flutter)。`brew --prefix` を毎回呼ぶと起動が遅くなるのでパスは決め打ち
+  # 以下は入っている機械でだけ効く。無ければ何もしない (macos/chunks で入れるもの / 手で入れるもの)
+  # openjdk (macos/chunks/flutter)。`brew --prefix` を毎回呼ぶと起動が遅くなるのでパスは決め打ち
   [ -d /opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home ] && export JAVA_HOME=/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home
   # uv (Python)。installer が置く env を読む
   [ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
   # maestro (モバイル E2E)
   [ -d "$HOME/.maestro/bin" ] && export PATH="$PATH:$HOME/.maestro/bin"
-  # ntn (Notion CLI, chunks/notion)。公式 script が ~/.local/bin に置く。uv の env が無い機械でも通るように
+  # ntn (Notion CLI, macos/chunks/notion)。公式 script が ~/.local/bin に置く。uv の env が無い機械でも通るように
   [ -x "$HOME/.local/bin/ntn" ] && case ":$PATH:" in *":$HOME/.local/bin:"*) ;; *) export PATH="$PATH:$HOME/.local/bin" ;; esac
 # }}} バージョン管理ツールの読み込み ここまで
 
 # コマンド追加 ここから {{{
 
-  # 補完と入力候補 (chunks/zsh で入る。入っていない機械では何もしない)
+  # 補完と入力候補 (macos/chunks/zsh で入る。入っていない機械では何もしない)
   # zsh-completions: 補完定義を fpath に足してから compinit を呼ぶ順序が必須
   [ -d /opt/homebrew/share/zsh-completions ] && fpath=(/opt/homebrew/share/zsh-completions $fpath)
   autoload -Uz compinit && compinit
@@ -122,7 +122,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 # }}}  zsh 終了時に呼び出す関数を登録する ここまで
 
 # プロンプト ここから {{{
-  # 見た目は starship (chunks/zsh で入る) に任せる。定義は zsh/starship.toml。
+  # 見た目は starship (macos/chunks/zsh で入る) に任せる。定義は zsh/starship.toml。
   # 入っていない機械では macOS 既定の `user@host dir %` のまま (何も壊れない)。
   # 公式の案内どおり .zshrc の末尾で init する: https://starship.rs/guide/
   if command -v starship >/dev/null; then
