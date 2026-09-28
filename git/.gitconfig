@@ -1,0 +1,14 @@
+[include]
+    path = .gitconfig.local # 秘匿情報や個人によって異なるものは local に記載する.
+[alias]
+	list-alias = "!git config --list | grep alias | cut -c 7-"
+	st = status
+	co = checkout
+	br = branch
+	cz = "git-cz" # https://github.com/streamich/git-cz で 統一した commit メッセージで commit を作成する.
+	delete-features = "!git br | grep 'feature/' | xargs git br -D" # 今いるブランチ以外の feature ブランチを全部削除する.
+	delete-branches = "!git branch | grep -v -e 'main' -e 'master' | xargs git branch -D"  # 今いるブランチと main 以外のブランチを全部削除する.
+[init]
+    defaultBranch = main
+[fetch]
+	prune = true # fetch のたびにリモートで消えたブランチの追跡を消す

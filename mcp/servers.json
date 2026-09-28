@@ -1,0 +1,49 @@
+{
+  "$comment": [
+    "Claude Code に繋ぐ MCP サーバの宣言。install.sh がこれを読んで配線する。",
+    "秘密の実値は絶対に書かない。Keychain のサービス名を secrets に書き、",
+    "args の中で security find-generic-password を使って実行時に解決する。"
+  ],
+
+  "user": [
+    {
+      "name": "freee-mcp",
+      "note": "freee 会計 / 人事労務 API。初回のみブラウザで OAuth。",
+      "config": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["freee-mcp"]
+      }
+    },
+    {
+      "name": "chatwork",
+      "note": "Chatwork。トークンは Keychain から実行時に解決する。",
+      "secrets": ["CHATWORK_API_TOKEN"],
+      "config": {
+        "type": "stdio",
+        "command": "sh",
+        "args": [
+          "-c",
+          "CHATWORK_API_TOKEN=$(security find-generic-password -a \"$USER\" -s CHATWORK_API_TOKEN -w) exec npx -y @chatwork/mcp-server"
+        ]
+      }
+    }
+  ],
+
+  "project": [],
+
+  "connectors": {
+    "$comment": [
+      "claude.ai アカウント側のコネクタ。設定ファイルでは復元できない (OAuth トークンが実体)。",
+      "install.sh はこれをチェックリストとして表示するだけで、自動配線はしない。",
+      "切れたときの復旧は  claude mcp login '<name>'  か claude.ai のコネクタ設定。"
+    ],
+    "names": [
+      "claude.ai Notion",
+      "claude.ai Gmail",
+      "claude.ai Slack",
+      "claude.ai Google Drive",
+      "claude.ai Google Calendar"
+    ]
+  }
+}

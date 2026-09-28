@@ -1,0 +1,8 @@
+# desc: その他の言語 (php / python / rbenv / yarn / chezmoi)
+brew "php"
+brew "python@3.11"
+brew "rbenv"
+brew "yarn"
+brew "chezmoi"
+cask "dotnet-sdk"
+brew "sl"

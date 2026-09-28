@@ -1,0 +1,1 @@
+# desc: Notion の公式 CLI (ntn)。Homebrew に formula も cask も無いので install.sh が公式スクリプトで入れる

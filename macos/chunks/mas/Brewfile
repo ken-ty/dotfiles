@@ -1,0 +1,14 @@
+# desc: App Store のアプリ (mas)。Apple ID でログインしてから。サーバーには入れない
+# `mas "名前", id: 番号`。番号は `mas list` で引ける。名前は表示用で、一致していなくても入る。
+brew "mas"
+mas "Amphetamine", id: 937984704
+mas "Bitwarden", id: 1352778147        # CLI (bw) と両方使う
+mas "Brother iPrint&Scan", id: 1193539993
+mas "Brother P-touch Editor", id: 1453365242
+mas "Brother Transfer Express", id: 1627217996
+mas "Developer", id: 640199958
+mas "Kindle", id: 302584613
+mas "LINE", id: 539883307
+mas "Microsoft Excel", id: 462058435
+mas "Swift Playground", id: 1496833156
+mas "Transporter", id: 1450874784
