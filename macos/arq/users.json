@@ -95,7 +95,19 @@
       "*.mode1v3",
       "*.mode2v3",
       "*.perspectivev3",
-      "visionOS_*_Simulator_Runtime*.dmg"
+      "visionOS_*_Simulator_Runtime*.dmg",
+      "\/Users\/apple\/Library\/Group Containers\/VUTU7AKEUR.jp.naver.line.mac\/tmp",
+      "\/Users\/apple\/Library\/Android",
+      "\/Users\/apple\/.asdf\/installs\/flutter",
+      "\/Users\/apple\/.cache\/uv",
+      "\/Users\/apple\/.cache\/github-copilot",
+      "\/Users\/apple\/Library\/Application Support\/Claude\/Code Cache",
+      "\/Users\/apple\/.nvm\/versions\/node\/v14.16.1",
+      "\/Users\/apple\/.nvm\/versions\/node\/v14.19.0",
+      "\/Users\/apple\/.nvm\/versions\/node\/v16.14.1",
+      "\/Users\/apple\/.nvm\/versions\/node\/v18.12.1",
+      "\/Users\/apple\/.ollama\/models",
+      "\/Users\/apple\/Library\/Application Support\/com.robotsandpencils.XcodesApp"
     ],
     "excludedDrives" : [
 
