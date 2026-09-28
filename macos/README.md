@@ -26,6 +26,7 @@ bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
 | `../asdf/.tool-versions` | asdf で管理している各ツールのグローバルバージョン |
 | `chunks/<名前>/Brewfile` | Homebrew で入れるものを技術のひと塊 (チャンク) ごとに分けたもの。「チャンク」の節 |
 | `defaults.sh` | macOS のシステム設定 (defaults)。「システム設定」の節 |
+| `arq/users.json` | Arq のバックアップ対象 `/Users` と除外ルール。「Arq の除外」の節 |
 
 ## install.sh が行う処理
 
@@ -210,3 +211,22 @@ diff /tmp/before.plist /tmp/after.plist
   `com.apple.spaces` に UUID 付きで書かれ、マシンをまたいで再現できないので手で設定します。
 - **Ctrl+数字 で操作スペースへ直接移動** (キーボード > キーボードショートカット > Mission Control)。
   `com.apple.symbolichotkeys` に書かれますが構造が壊れやすいので、手で有効にします。
+
+## Arq の除外
+
+Arq (バックアップ) の「Back up to AWS」プランの `/Users` と、その除外ルールを `arq/users.json` に
+置いています。Arq の画面の **Edit → Files タブ → 右下の Export... / Import..** で書き出す・読み込む
+JSON そのままです。スケジュールや保持期間など Files タブ以外の設定は含まれません (`arqc` にも
+設定を書くコマンドは無い)。
+
+**方針: `/Users` 丸ごと − 除外。** 守るものを並べる方式にしないのは、守るものの足し忘れは
+復元のときに初めて気づくが、除外の足し忘れは翌朝のログのファイル数で気づけるから。
+足す除外は `tmp` や `Caches` のような短い名前ではなく、フルパス (`/Users/apple/...`) で書き、
+**アプリの状態を含まず再取得できるものだけ**にする。
+
+| やりたいこと | 手 |
+| --- | --- |
+| 除外を足す | Arq で Export → このファイルに上書きして差分を確かめる → `wildcardExcludes` に 1 行足す → Import → Excludes 列の件数を確かめて Save → commit |
+| 効いたか確かめる | `/Library/Application Support/ArqAgent/logs/backup` の最新ログの `/Users (N exclusions): X GB, Y files backed up` の Y |
+
+Save すると実行中のバックアップは中止され、新しい設定ですぐやり直される (2026-09-28 に実測)。
