@@ -17,4 +17,8 @@ Arq の日次バックアップが 5〜8 時間かかっていた。除外は画
 ## 結果
 
 - スケジュールや保持期間など Files タブ以外の設定は JSON に含まれない
-- 既存ルールには短い名前のパターン (`target`、`Cache` など) が残っており、方針に合わせる整理は別に行う
+- 既存ルールには短い名前のパターン (`target`、`Cache` など) が残っている。2026-09-28 に `find` で当たり先を点検し、守りたいものに当たっていた 3 行だけを直した
+  - `.android` → `~/.android/avd` と `~/.android/cache` に絞る。`debug.keystore`・`adbkey`・`maps.key` を守るため
+  - `*/Library/Developer` → シミュレータ・DerivedData・DeviceSupport などフルパス 9 行に分ける。Archives と `UserData` (Provisioning Profiles、キーバインド) を守るため
+  - `*.xcworkspace` → 削除。git 管理外のプロジェクトで `Runner.xcworkspace` が失われ、復元しても Xcode で開けなくなるため。ユーザー固有の状態は `xcuserdata` で除外済み
+  - 残りの短い名前 (`target`、`Cache`、`Caches`、`Logs`、`Pods`、`.gradle` など) は、当たり先がすべて再生成できるものだったので据え置く
