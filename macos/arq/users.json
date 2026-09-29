@@ -115,7 +115,9 @@
       "\/Users\/apple\/.nvm\/versions\/node\/v16.14.1",
       "\/Users\/apple\/.nvm\/versions\/node\/v18.12.1",
       "\/Users\/apple\/.ollama\/models",
-      "\/Users\/apple\/Library\/Application Support\/com.robotsandpencils.XcodesApp"
+      "\/Users\/apple\/Library\/Application Support\/com.robotsandpencils.XcodesApp",
+      "\/Users\/apple\/.dartServer",
+      "\/Users\/apple\/Library\/pnpm\/store"
     ],
     "excludedDrives" : [
 
