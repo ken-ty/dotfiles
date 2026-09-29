@@ -117,7 +117,9 @@
       "\/Users\/apple\/.ollama\/models",
       "\/Users\/apple\/Library\/Application Support\/com.robotsandpencils.XcodesApp",
       "\/Users\/apple\/.dartServer",
-      "\/Users\/apple\/Library\/pnpm\/store"
+      "\/Users\/apple\/Library\/pnpm\/store",
+      "\/Users\/apple\/ghq\/github.com\/ken-ty\/unity-mcp-project\/Library",
+      "\/Users\/apple\/Setup Guide In-Editor Tutorial\/Library"
     ],
     "excludedDrives" : [
 
