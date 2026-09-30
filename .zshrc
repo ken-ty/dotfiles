@@ -84,7 +84,18 @@ export PATH="/opt/homebrew/bin:$PATH"
     case "$1" in
       # バックグラウンドセッション (claude --bg) の ID・名前・状態を一覧する。ID は claude attach / stop に渡す
       ls) claude agents --json | jq -r '.[] | select(.kind=="background") | [.id, .name, .state] | @tsv' ;;
-      *)  echo "usage: ccx ls" >&2; return 1 ;;
+      # 8 時間アイドルで daemon に退役させられたセッションを起こし直す。会話はそのまま戻る。
+      # 引数なしなら退役中 (プロセスが無く、stop したものではない) を fzf で選ぶ。Tab で複数選択
+      up)
+        shift
+        local ids=("$@")
+        if (( ! $#ids )); then
+          ids=(${(f)"$(claude agents --json --all \
+            | jq -r '.[] | select(.kind=="background" and .pid==null and .state!="stopped") | [.id, .name, .state] | @tsv' \
+            | fzf -m --with-nth=2.. --delimiter='\t' --prompt='起こす> ' | cut -f1)"})
+        fi
+        local id; for id in $ids; do claude respawn "$id"; done ;;
+      *)  echo "usage: ccx ls | ccx up [id...]" >&2; return 1 ;;
     esac
   }
 
