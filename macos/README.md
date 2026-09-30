@@ -91,13 +91,10 @@ source $HOME/.zshrc
 symlink を辿らない** ので、`git/.gitconfig.local` に書いただけでは読まれません
 (2026-09-14 に mini で実測。MBP も同じ状態で、読まれていなかった)。
 
-### 3. VSCode の拡張機能インポート
+### 3. VSCode の拡張機能
 
-必要に応じて、VSCode の拡張機能をインポートします：
-
-```bash
-source $HOME/dotfiles/vscode/my_vscode_extensions.sh
-```
+拡張機能は `macos/chunks/vscode/Brewfile` の `vscode "..."` 行が正本で、`install.sh` で
+vscode チャンクを選ぶと入ります。実機で足した拡張を残したいときは、この Brewfile に 1 行足します。
 
 ## キーバインド
 

@@ -169,13 +169,6 @@
   "editor.accessibilitySupport": "off",
   // 定期的に自動fetchする
   "git.autofetch": true,
-  // copilot の有効/無効設定
-  "github.copilot.enable": {
-    "*": true,
-    "markdown": true,
-    "plaintext": false,
-    "scminput": false
-  },
   // gitlens の設定
   "gitlens.codeLens.enabled": false,
   "gitlens.currentLine.format": "${author, }${agoOrDateShort}${' via 'pullRequest}${ • message|100?}",
@@ -233,10 +226,6 @@
   "svelte.enable-ts-plugin": true,
   // SVG Previewer の設定
   "svg.preview.mode": "svg",
-  // ターミナルの設定
-  "terminal.integrated.env.osx": {
-    "FIG_NEW_SESSION": "1"
-  },
   // ログインシェルを開かないようにする。通常のターミナルと異なる挙動を防ぐ。
   // https://code.visualstudio.com/docs/terminal/advanced#_environment-inheritance
   "terminal.integrated.inheritEnv": false,
