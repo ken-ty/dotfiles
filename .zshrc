@@ -78,14 +78,13 @@ export PATH="/opt/homebrew/bin:$PATH"
   # 操作: keybind list / on / off / edit。この機械だけの変更は ~/.zsh-keybindings.local に落ちる。
   source "${${(%):-%N}:A:h}/zsh/keybindings.zsh"
 
-  # Claude Code の自作サブコマンド。`cc <サブコマンド>` の形で育てる。
-  # cc は C コンパイラ (/usr/bin/cc) と同名なので、知らないサブコマンドは本物へ素通しする。
-  # 関数なので効くのは対話シェルだけ。make などのビルドは関数を経由しない。
-  function cc() {
+  # Claude Code の自作サブコマンド。`ccx <サブコマンド>` の形で育てる。
+  # cc は C コンパイラ (/usr/bin/cc) なので避けて ccx にした。
+  function ccx() {
     case "$1" in
       # バックグラウンドセッション (claude --bg) の ID・名前・状態を一覧する。ID は claude attach / stop に渡す
       ls) claude agents --json | jq -r '.[] | select(.kind=="background") | [.id, .name, .state] | @tsv' ;;
-      *)  command cc "$@" ;;
+      *)  echo "usage: ccx ls" >&2; return 1 ;;
     esac
   }
 
