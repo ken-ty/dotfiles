@@ -212,6 +212,14 @@ while IFS='|' read -r src dest name when <&3; do
     backup_and_link "$DOT_DIR/$src" "$HOME/$dest" "$name"
 done 3< "$links_conf"
 
+# コミットのメールを GitHub の noreply にそろえる。値は gh から引くのでリポジトリには書かない。
+# 既に別のメールが入っていれば書き換えない。gh が未ログインなら案内だけ出して進む
+if [ -f "$DOT_DIR/git/noreply-email.sh" ]; then
+    bash "$DOT_DIR/git/noreply-email.sh" "$HOME/.gitconfig.local"
+else
+    echo "SKIP: git noreply email (\$HOME/dotfiles が古い。git -C \$HOME/dotfiles pull --ff-only のあと再実行)"
+fi
+
 # Homebrew とチャンク
 echo "==================================="
 echo "Step 4: Homebrew & chunks"

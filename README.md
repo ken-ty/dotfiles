@@ -45,6 +45,34 @@ OS 固有のものは `macos/` と `windows/` に置き、それ以外 (直下) 
 `~/.config/git/ignore` に `install.sh` が symlink するので、`.gitconfig` に
 `core.excludesfile` は書きません。Windows の `install.ps1` はまだ張りません。
 
+### コミットのメールは GitHub の noreply にする
+
+コミットの作者メールは、push した時点で誰でも読めます。public なリポジトリに一度載ると
+履歴を書き換えない限り消せないので、**最初から GitHub の noreply
+(`<id>+<login>@users.noreply.github.com`) でコミットします。**
+
+`install.sh` は `git/noreply-email.sh` を呼び、`gh api user` で引いた id と login から
+noreply を組み立てて `~/.gitconfig.local` の `user.email` に書きます (`user.name` が無ければ
+login も)。値はこのリポジトリに書かないので、fork した人が流せばその人の noreply が入ります。
+Windows の `install.ps1` は Step 5 で同じことを `git config --global` に対して行います。
+
+- **既に noreply 以外の `user.email` が入っていれば書き換えません。** 表示して止まるだけです
+- gh にログインしていなければ何もしません。`gh auth login` のあと、もう一度流します:
+  `bash ~/dotfiles/git/noreply-email.sh`
+- 何度流しても同じ結果です
+
+GitHub 側の設定は手で入れます (スクリプトからは触りません)。Settings → Emails で:
+
+- **Keep my email addresses private** — Web 上の操作 (マージなど) のコミットも noreply になる
+- **Block command line pushes that expose my email** — 個人のメールが載ったコミットの push を GitHub が拒む
+
+**先方に指定されたメールでコミットする仕事は、そのリポジトリの中だけで上書きします。**
+グローバルは noreply のままにしておきます。
+
+```bash
+git -C <そのリポジトリ> config user.email <指定のメール>
+```
+
 ## MCP
 
 Claude Code に繋ぐ MCP サーバを `mcp/servers.json` で宣言的に管理しています。
