@@ -1,0 +1,4 @@
+# desc: gitleaks / ruff / ast-grep — コミット前の機械検査と自動整形 (agent-skills-store の agents/checks と hook が使う)
+brew "gitleaks"
+brew "ruff"
+brew "ast-grep"
