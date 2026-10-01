@@ -26,6 +26,8 @@ bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
 | `../asdf/.tool-versions` | asdf で管理している各ツールのグローバルバージョン |
 | `chunks/<名前>/Brewfile` | Homebrew で入れるものを技術のひと塊 (チャンク) ごとに分けたもの。「チャンク」の節 |
 | `defaults.sh` | macOS のシステム設定 (defaults)。「システム設定」の節 |
+| `links.conf` | `install.sh` が `$HOME` に張る symlink の表。`doctor.sh` も同じ表を読む |
+| `doctor.sh` | 配布後のヘルスチェック。読み取りのみ。「ヘルスチェック (doctor)」の節 |
 | `arq/users.json` | Arq のバックアップ対象 `/Users` と除外ルール。「Arq の除外」の節 |
 
 ## install.sh が行う処理
@@ -34,6 +36,7 @@ bash -c "$(curl -fsSL https://raw.github.com/ken-ty/dotfiles/main/install.sh)"
 2. 設定ファイルのシンボリックリンクを作成。既存のファイルは `$HOME/dotfiles_backup` に退避。すでに同じ場所を指していれば何もしない
 3. Homebrew が無ければ入れ、**チャンク** (下記) を選んで `brew bundle`
 4. macOS の `defaults` (任意)
+5. `macos/doctor.sh` でヘルスチェック。**bad があれば `install.sh` も非 0 で終わる**
 
 何度実行しても同じ結果になります。`$HOME/dotfiles` が git checkout でないディレクトリのときだけ止まるので、
 そのときは退避してから再実行してください。
@@ -49,6 +52,30 @@ bash install.sh --mode select              # チャンクを 1 つずつ選ぶ (
 > いましたが、そのリポジトリは保守されていないため落としました。スキルが要るなら
 > [agent-skills](https://github.com/ken-ty/agent-skills) を別途入れてください。
 > Windows の `install.ps1` は Step 6 でそこまで面倒を見ます（sh 側との共通化は未着手）。
+
+## ヘルスチェック (doctor)
+
+`install.sh` が作るものが実機で揃っているかを見ます。何も変更しません。`install.sh` が最後に
+自動で流しますが、単独でもいつでも流せます。
+
+```bash
+bash macos/doctor.sh
+```
+
+| 見るもの | 宣言 | bad になるとき | warn になるとき |
+| --- | --- | --- | --- |
+| `link` | `links.conf` | 壊れたリンク、別の先を指すリンク、張るはずのものが無い | symlink でなく実ファイル (確認で n と答えた)、張る元が repo に無い、`-gui` のものが無い |
+| `brew` | `chunks/*/Brewfile` | — | `brew bundle check` が通らない (未導入か古い)。どのチャンクを選んだかは記録していないので全チャンクを見る |
+| `defaults` | `defaults.sh` | — | 宣言と値が違う (`defaults.sh --check` と同じ) |
+| `mcp` | `../mcp/servers.json` | — | `mcp/doctor.sh` が MISSING / FAILED / UNDECLARED を出した |
+
+出力は 1 項目 1 行で `ok` / `warn` / `bad`、最後に `ok N / warn N / bad N`。**bad が 1 つでも
+あれば終了コード 1、warn だけなら 0。** bad は「`install.sh` が張ったはずのものが壊れている」
+ときだけで、入れるかを選べるもの (チャンク、defaults、MCP) の差は warn に留めています。
+
+symlink の一覧は `links.conf` にしか書きません。張るものを足すときはこの表に 1 行足せば、
+`install.sh` が張り、`doctor.sh` が検査します。見る先は `$HOME/dotfiles` (配置先) です。
+ghq の正本から流しても同じ先を見ます。
 
 ## チャンク
 
