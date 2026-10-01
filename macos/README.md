@@ -87,6 +87,7 @@ ghq の正本から流しても同じ先を見ます。
 | `core` | git / gh / ghq / fzf / jq / tree / tig / bw。`.zshrc` が前提にしている。`install.sh` が `~/.fzf.zsh` を作る (指す先が消えていれば作り直す) | ✓ |
 | `zsh` | zsh-autosuggestions / zsh-completions / starship。`.zshrc` が読む (starship は `zsh/starship.toml` を指して init)。`install.sh` が compaudit を通す | ✓ |
 | `node` | asdf と `.tool-versions` の nodejs | ✓ |
+| `checks` | gitleaks / ruff / ast-grep。コミット前の機械検査と自動整形で使う（agent-skills-store の `agents/checks`・`agents/hooks`）。shellcheck と shfmt は asdf（`.tool-versions`） | ✓ |
 | `docker` | colima + docker CLI。**Docker Desktop が入っている機械では飛ばす** (`install.sh` が検出する) | |
 | `flutter` | asdf の flutter、xcodes CLI、openjdk、bundletool、Android Studio。JDK は brew の openjdk 1 本 | |
 | `media` | ffmpeg / graphviz / librsvg / webp / avif など | |
