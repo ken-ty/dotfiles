@@ -11,7 +11,7 @@ dotfiles は設定ファイルの置き場ではなく、「この機械に何�
 | --- | --- | --- |
 | 宣言が正、実態は宣言から作る | Brewfile のチャンク、`mcp/servers.json`、`macos/defaults.sh`、`zsh/keybindings.conf`、`macos/arq/users.json` | [ADR 0002](adr/0002-declaration-is-source-of-truth.md) |
 | 何度流しても同じ結果 (冪等) | `install.sh` は同じ先を指す symlink に触らない。`defaults.sh` は差分があるものだけ書く | [ADR 0002](adr/0002-declaration-is-source-of-truth.md) |
-| ずれは読み取りだけで見つけられる | `mcp/doctor.sh`、`defaults.sh --check`、`keybind list` | [ADR 0002](adr/0002-declaration-is-source-of-truth.md) |
+| ずれは読み取りだけで見つけられる | `macos/doctor.sh` (install の最後にも走る)、`mcp/doctor.sh`、`defaults.sh --check`、`keybind list` | [ADR 0002](adr/0002-declaration-is-source-of-truth.md) [ADR 0011](adr/0011-doctor-after-install.md) |
 | 秘密はリポジトリに入れない | 名前だけ宣言し、値は Keychain / Bitwarden から実行時に取る。機械ごとの値は `*.local` (git 管理外) | [ADR 0001](adr/0001-no-secrets-in-repo.md) |
 | 機械ごとの差は `.local` で後勝ち | `~/.gitconfig.local`、`~/.zsh-keybindings.local`、`~/.zshrc.local` | [ADR 0006](adr/0006-tables-and-local-overrides.md) |
 | 入れるものは選べる | 推奨 / full / select。サーバーには推奨だけ | [ADR 0003](adr/0003-brew-chunks.md) |

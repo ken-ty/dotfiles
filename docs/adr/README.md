@@ -14,3 +14,4 @@
 | [0008](0008-split-by-os.md) | README とコードを 共通 / macOS / Windows に分ける |
 | [0009](0009-arq-exclusions.md) | Arq の除外は「/Users 丸ごと − フルパスの除外」で持つ |
 | [0010](0010-squash-history-before-public.md) | 公開の前に履歴を「最初の commit + 公開時点」の 2 つにまとめる |
+| [0011](0011-doctor-after-install.md) | 配布後のヘルスチェックを install に組み込み、壊れていたら install を失敗させる |

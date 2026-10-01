@@ -356,9 +356,22 @@ Write-Host "       Ctrl+]     # same, as a key binding"
 Write-Host "       Ctrl+r     # history search (needs Step 8)"
 Write-Host "     Ctrl+] does not reach every terminal. If it is dead, use g or rebind it."
 Write-Host ""
-Write-Host "Verify the end state from inside any repo (not from your home directory,"
-Write-Host "or doctor mistakes personal skills for project ones):"
-Write-Host ""
-Write-Host "  agent-skills doctor"
+
+# 配布後のヘルスチェック (ADR 0011)。agent-skills doctor を案内するだけでなく実行する。
+# ホームから流すと個人のスキルを project のものと取り違えるので、リポジトリの中 (この dotfiles) で流す。
+# install.sh と違い、BAD でも install.ps1 は失敗にしない。Step 6 で symlink の権限が無く
+# 飛ばした機械では BAD が出るのが想定どおりで、そこはこのスクリプトの外で直すものだから。
+Write-Host "==================================="
+Write-Host "Health check: agent-skills doctor"
+Write-Host "==================================="
+if (Test-Has 'agent-skills') {
+    Push-Location (Split-Path $PSScriptRoot -Parent)
+    try { Invoke-Native { agent-skills doctor } }
+    finally { Pop-Location }
+} else {
+    Write-Host "  skipped: agent-skills is not on PATH (Step 6 skipped, or reopen the terminal)."
+    Write-Host "  Later, from inside any repo (not from your home directory):"
+    Write-Host "    agent-skills doctor"
+}
 Write-Host ""
 Write-Host "Traps behind each step: the my-windows-setup skill."

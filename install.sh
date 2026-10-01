@@ -187,34 +187,30 @@ echo "==================================="
 
 os_name=$(get_os_name)
 
-# Home ディレクトリ用ファイル
-backup_and_link "$DOT_DIR/.zshrc" "$HOME/.zshrc" ".zshrc"
+# 張るものは macos/links.conf の表。macos/doctor.sh も同じ表で検査する
+links_conf="$DOT_DIR/macos/links.conf"
+[ -f "$links_conf" ] || error_exit "0103" "macos/links.conf not found" \
+    "\$HOME/dotfiles is older than this install.sh. Update it and re-run:\n\n    git -C \$HOME/dotfiles pull --ff-only"
 
-# asdf の設定
-for asdf_file in ".tool-versions" ".default-gems"; do
-    backup_and_link "$DOT_DIR/asdf/$asdf_file" "$HOME/$asdf_file" "$asdf_file"
-done
-
-# Git の設定
-backup_and_link "$DOT_DIR/git/.gitconfig" "$HOME/.gitconfig" "Git config"
 # .gitconfig の include は「~/.gitconfig からの相対」で解決される (symlink を辿らない) ので、
-# ~/.gitconfig.local も張る。中身は機械ごと (gh の credential helper など)。無ければ空で作る
+# ~/.gitconfig.local も張る (表にある)。中身は機械ごと (gh の credential helper など)。無ければ空で作る
 [ -e "$DOT_DIR/git/.gitconfig.local" ] || touch "$DOT_DIR/git/.gitconfig.local"
-backup_and_link "$DOT_DIR/git/.gitconfig.local" "$HOME/.gitconfig.local" "Git config (local)"
-# グローバル gitignore。~/.config/git/ignore は git が既定で読む場所 (XDG) なので
+# グローバル gitignore (git/ignore) は git が既定で読む ~/.config/git/ignore (XDG) に張るので、
 # .gitconfig に core.excludesfile は書かない
-backup_and_link "$DOT_DIR/git/ignore" "$HOME/.config/git/ignore" "Git global ignore"
 
-# VSCode の設定 (--yes のときは飛ばす。サーバーに VSCode は無い)
-if ! $YES; then
-    vscode_dest=""
-    if [ "$os_name" == "Mac" ]; then
-        vscode_dest="$HOME/Library/Application Support/Code/User/settings.json"
-    elif [ "$os_name" == "Ubuntu" ]; then
-        vscode_dest="$HOME/.config/Code/User/settings.json"
-    fi
-    backup_and_link "$DOT_DIR/vscode/settings.json" "$vscode_dest" "VSCode settings.json"
-fi
+# 表は fd 3 で読む。prompt_setup が stdin から答えを読むので、stdin に表を流すと答えを食われる
+while IFS='|' read -r src dest name when <&3; do
+    case "$src" in ''|'#'*) continue ;; esac
+    case "$when" in
+        all) ;;
+        mac|mac-gui) [ "$os_name" == "Mac" ] || continue ;;
+        ubuntu|ubuntu-gui) [ "$os_name" == "Ubuntu" ] || continue ;;
+        *) echo "SKIP: $name (when が不明: $when)"; continue ;;
+    esac
+    # -gui はサーバー (--yes) では飛ばす。サーバーに VSCode は無い
+    case "$when" in *-gui) $YES && continue ;; esac
+    backup_and_link "$DOT_DIR/$src" "$HOME/$dest" "$name"
+done 3< "$links_conf"
 
 # Homebrew とチャンク
 echo "==================================="
@@ -268,6 +264,15 @@ fi
 # macOS のシステム設定 (defaults)。サーバー (--yes) では触らない
 if [ "$os_name" == "Mac" ] && ! $YES && prompt_setup "macOS defaults"; then
     bash "$DOT_DIR/macos/defaults.sh"
+fi
+
+# 配布後のヘルスチェック。張ったはずの symlink が壊れていたら (bad) ここで非 0 で終わる
+echo "==================================="
+echo "Step 5: Health check (macos/doctor.sh)"
+echo "==================================="
+if ! bash "$DOT_DIR/macos/doctor.sh"; then
+    error_exit "0104" "Health check found broken items" \
+    "Fix the lines marked 'bad' above, then re-run install.sh or:\n\n    bash \$HOME/dotfiles/macos/doctor.sh"
 fi
 
 echo -e "\nAll steps completed successfully!"
