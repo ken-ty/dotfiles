@@ -1,0 +1,29 @@
+#!/bin/sh
+# ステージした変更の機械検査（衝突記号・大きいファイル・壊れた symlink・shellcheck・
+# コミットしないファイル・書式・相対リンク）。中身は store の agents/checks/staged.py で、
+# ~/.agents/checks に配られている（agent-skills distribute）。
+#
+# 置いたのは `agent-skills project init`。core.hooksPath=hooks で有効になる。
+# このリポジトリだけの検査は hooks/pre-commit.d/ に実行可能ファイルで足す（名前順に流す）。
+# AGENT_CHECKS_DIR で検査の置き場を差し替えられる（テスト用）。
+set -e
+checks="${AGENT_CHECKS_DIR:-$HOME/.agents/checks}"
+py=/usr/bin/python3
+[ -x "$py" ] || py=python3
+
+if [ ! -f "$checks/staged.py" ]; then
+  echo "pre-commit: $checks/staged.py が無い。store を配線して agent-skills distribute を流す" >&2
+  exit 1
+fi
+"$py" "$checks/staged.py"
+
+top="$(git rev-parse --show-toplevel)"
+if [ -d "$top/hooks/pre-commit.d" ]; then
+  for check in "$top"/hooks/pre-commit.d/*; do
+    [ -f "$check" ] && [ -x "$check" ] || continue
+    (cd "$top" && "$check") || {
+      echo "pre-commit: $(basename "$check") failed" >&2
+      exit 1
+    }
+  done
+fi
