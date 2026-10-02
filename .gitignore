@@ -1,2 +1,5 @@
 git/.gitconfig.local
 .worktrees/
+.plans/
+.research/
+.artifacts/
