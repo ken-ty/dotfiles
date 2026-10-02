@@ -25,7 +25,8 @@ powershell -ExecutionPolicy Bypass -File dotfiles\windows\install.ps1
 3. `core.sshCommand` を Windows OpenSSH に向ける ── **非 ASCII のユーザ名では必須**。
    これが無いと、鍵も登録も正しいのに `publickey` 拒否になる
 4. ed25519 鍵の生成 → 公開鍵を表示 → 登録待ち → `ssh -T` で疎通確認
-5. `gh auth status`（ログインはブラウザ対話なので手動）
+5. `gh auth status`（ログインはブラウザ対話なので手動）。ログイン済みなら `user.email` を
+   GitHub の noreply にそろえる（既に別のメールがあれば触らない。理由はルートの README の「Git」）
 6. agent-skills / agent-skills-store を clone して配線
 7. `$PROFILE` に `windows/Microsoft.PowerShell_profile.ps1` を dot-source する 1 行を追記
 8. PSFzf（任意。Ctrl+r の履歴 fuzzy search に要る）

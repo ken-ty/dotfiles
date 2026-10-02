@@ -222,6 +222,36 @@ Invoke-Native { gh auth status }
 Write-Host "  If not logged in:  gh auth login"
 Write-Host "  (GitHub.com -> SSH -> Skip key upload -> Login with a web browser)"
 
+# コミットのメールを GitHub の noreply にそろえる。install.sh の git/noreply-email.sh と同じ判定。
+# Windows は .gitconfig.local を張らないので --global に書く。値は gh から引くのでリポジトリには書かない。
+# 既に noreply 以外が入っていれば書き換えない (先方指定のメールなどを壊さない)。
+$suffix = '@users.noreply.github.com'
+$currentEmail = (git config --global user.email)
+if ($currentEmail -and $currentEmail.EndsWith($suffix)) {
+    Write-Host "  ok      user.email already noreply ($currentEmail)"
+} elseif ($currentEmail) {
+    Write-Host "  keep    user.email = $currentEmail (not overwriting)"
+    Write-Host "          to switch to noreply: git config --global --unset user.email, then re-run"
+} elseif (-not (Test-Has 'gh')) {
+    Write-Host "  skip    user.email not set - gh is not on PATH. Reopen the terminal and re-run"
+} else {
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    # jq の式に " を入れない。PS 5.1 はネイティブ exe へ渡す引数の " を落とす。id と login を 2 行で受ける
+    try { $ghUser = @(gh api user --jq '.id,.login' 2>$null) } finally { $ErrorActionPreference = $prev }
+    if ($LASTEXITCODE -ne 0 -or $ghUser.Count -ne 2) {
+        Write-Host "  skip    user.email not set - gh is not logged in. Re-run after gh auth login"
+    } else {
+        $id, $login = $ghUser[0].Trim(), $ghUser[1].Trim()
+        git config --global user.email "$id+$login$suffix"
+        Write-Host "  set     user.email=$id+$login$suffix"
+        if (-not (git config --global user.name)) {
+            git config --global user.name $login
+            Write-Host "  set     user.name=$login"
+        }
+    }
+}
+
 # -----------------------------------------------
 # Step 6: agent-skills
 # -----------------------------------------------
