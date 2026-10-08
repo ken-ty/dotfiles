@@ -80,6 +80,7 @@ export PATH="/opt/homebrew/bin:$PATH"
 
   # Claude Code の自作サブコマンド。`ccx <サブコマンド>` の形で育てる。
   # cc は C コンパイラ (/usr/bin/cc) なので避けて ccx にした。
+  source "${${(%):-%N}:A:h}/zsh/ccx-sweep.zsh"
   function ccx() {
     case "$1" in
       # バックグラウンドセッション (claude --bg) の ID・名前・状態を一覧する。ID は claude attach / stop に渡す
@@ -95,7 +96,9 @@ export PATH="/opt/homebrew/bin:$PATH"
             | fzf -m --with-nth=2.. --delimiter='\t' --prompt='起こす> ' | cut -f1)"})
         fi
         local id; for id in $ids; do claude respawn "$id"; done ;;
-      *)  echo "usage: ccx ls | ccx up [id...]" >&2; return 1 ;;
+      # 起こしただけ・終わったまま放置の空セッションを一覧する。--yes で stop (会話は残る)。判定は zsh/ccx-sweep.zsh
+      sweep) shift; _ccx_sweep "$@" ;;
+      *)  echo "usage: ccx ls | ccx up [id...] | ccx sweep [--yes]" >&2; return 1 ;;
     esac
   }
 
