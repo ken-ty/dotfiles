@@ -5,7 +5,8 @@
 # 候補を一覧してから聞き、Enter で claude rm する。それ以外の入力で中止。
 #   -n, --dry-run  一覧だけ出す (端末でないとき、たとえば他のスクリプトから呼んだときも一覧だけ)
 #   -y, --yes      聞かずに消す
-# claude rm は bg セッションにしか効かないので、interactive (VS Code・端末) の空は「要確認」に出すだけ。
+# bg は claude rm で消す。interactive (VS Code・Desktop・端末) は claude rm が効かないので、候補には出すが
+# 自動では止めず、終わらせるコマンド (kill <pid>) を表示する。
 # 未 push・未コミットのある worktree は claude rm 自身が拒むので、そのまま残る (消す指示は付けない)。
 #
 # 判定は下の jq の表 2 つで決まる。条件を足すときは表に 1 行足す。
@@ -15,14 +16,15 @@
 #   claude agents --json --all の 1 行 (id, kind, pid, name, state, status, sessionId …)
 #   .job    = ~/.claude/jobs/<id>/state.json (state, detail, needs …)。無ければ {}
 #   .inputs = 会話ログ全体での Ken の入力の件数。会話ログが無ければ 0 (一度も話していない)
+#   .bridge = ~/.claude/sessions/<pid>.json の bridgeSessionId。claude.ai の URL (…/code/<これ>) と突き合わせる
 
 _ccx_empty_rules='
 def must: [
   {why: "Ken の入力が一度も無い",         ok: (.inputs == 0)},
-  {why: "いま応答を作っていない",         ok: (.status != "busy")}
+  {why: "いま応答を作っていない",         ok: (.status != "busy")},
+  {why: "指す手段がある (bg は id、それ以外は pid)", ok: (if .kind == "background" then .id != null else .pid != null end)}
 ];
 def doubt: [
-  {why: "bg ではない (claude rm が効かない)", hit: (.kind != "background")},
   {why: "needs (Ken への依頼) がある",    hit: ((.job.needs // "") != "")}
 ];
 map(select([must[].ok] | all))
@@ -50,7 +52,7 @@ _ccx_empty() {
   esac
 
   # 判定の材料を 1 セッション 1 行の JSON にする
-  local facts=() a id sid job logs
+  local facts=() a id sid job pidf logs
   for a in ${(f)"$(claude agents --json --all | jq -c '.[]')"}; do
     id=$(jq -r '.id // ""' <<<"$a")
     sid=$(jq -r '.sessionId // ""' <<<"$a")
@@ -58,29 +60,34 @@ _ccx_empty() {
     logs=()
     [[ -n $sid ]] && logs=(~/.claude/projects/*/$sid.jsonl(N))
     [[ -n $id && -f $job ]] || job=/dev/null
-    facts+=("$(jq -c --slurpfile job "$job" \
+    pidf=~/.claude/sessions/$(jq -r '.pid // "none"' <<<"$a").json
+    [[ -f $pidf ]] || pidf=/dev/null
+    facts+=("$(jq -c --slurpfile job "$job" --slurpfile ses "$pidf" \
       --argjson inputs "$(_ccx_empty_inputs $logs)" \
-      '. + {job: ($job[0] // {}), inputs: $inputs}' <<<"$a")")
+      '. + {job: ($job[0] // {}), bridge: ($ses[0].bridgeSessionId // null), inputs: $inputs}' <<<"$a")")
   done
 
   local result
   result=$(printf '%s\n' $facts | jq -s "$_ccx_empty_rules") || return 1
 
   echo "消す候補:"
-  jq -r '.rm[] | "  \(.id)\t\(.name)\t\(.state // "-")\t\(.cwd // "")"' <<<"$result"
+  jq -r '.rm[] | "  \(.id // "pid \(.pid)")\t\(.kind)\t\(.name)\t\(if .bridge then "https://claude.ai/code/\(.bridge)" else "" end)"' <<<"$result"
   echo "要確認 (候補に入れていない):"
-  jq -r '.check[] | "  \(.id // "pid \(.pid)")\t\(.name)\t\(.doubts | join(" / "))\t\(.cwd // "")"' <<<"$result"
+  jq -r '.check[] | "  \(.id // "pid \(.pid)")\t\(.kind)\t\(.name)\t\(.doubts | join(" / "))"' <<<"$result"
 
-  local ids=(${(f)"$(jq -r '.rm[].id' <<<"$result")"})
+  local ids=(${(f)"$(jq -r '.rm[] | select(.kind == "background") | .id' <<<"$result")"})
+  local pids=(${(f)"$(jq -r '.rm[] | select(.kind != "background") | .pid' <<<"$result")"})
+  # interactive は claude rm が効かない。自動では止めず、終わらせるコマンドを出す
+  (( $#pids )) && echo "interactive の空は claude rm が効かない。終わらせるなら: kill $pids"
   if (( ! $#ids )); then
-    echo "消す候補はありません"
+    (( $#pids )) || echo "消す候補はありません"
     return 0
   fi
   case $mode in
     list) echo "消すには: ccx empty"; return 0 ;;
     ask)
       local ans
-      read -r "ans?$#ids 本を claude rm します。Enter で実行、それ以外で中止: "
+      read -r "ans?bg $#ids 本を claude rm します。Enter で実行、それ以外で中止: "
       [[ -z $ans ]] || { echo "中止しました"; return 0; } ;;
   esac
   local i; for i in $ids; do claude rm "$i"; done
