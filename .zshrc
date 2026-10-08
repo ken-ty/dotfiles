@@ -96,9 +96,9 @@ export PATH="/opt/homebrew/bin:$PATH"
             | fzf -m --with-nth=2.. --delimiter='\t' --prompt='起こす> ' | cut -f1)"})
         fi
         local id; for id in $ids; do claude respawn "$id"; done ;;
-      # 起こしただけ・終わったまま放置の空セッションを一覧する。--yes で stop (会話は残る)。判定は zsh/ccx-sweep.zsh
+      # 起こしただけ・終わったまま放置の空セッションを一覧し、Enter で claude rm する (会話ログは残る)。判定は zsh/ccx-sweep.zsh
       sweep) shift; _ccx_sweep "$@" ;;
-      *)  echo "usage: ccx ls | ccx up [id...] | ccx sweep [--yes]" >&2; return 1 ;;
+      *)  echo "usage: ccx ls | ccx up [id...] | ccx sweep [-n|-y]" >&2; return 1 ;;
     esac
   }
 

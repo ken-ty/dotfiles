@@ -1,7 +1,10 @@
-# ccx sweep: 何もしていない bg セッションを見つけて止める。.zshrc の ccx から呼ばれる。
+# ccx sweep: 何もしていない bg セッションを見つけて消す。.zshrc の ccx から呼ばれる。
 #
-# 既定は一覧を出すだけ (dry-run)。--yes を付けたときだけ候補を claude stop する。
-# stop は会話を残す (claude attach <id> で戻せる)。rm はしない。
+# 候補を一覧してから聞き、Enter で claude rm する。それ以外の入力で中止。
+#   -n, --dry-run  一覧だけ出す (端末でないとき、たとえば他のスクリプトから呼んだときも一覧だけ)
+#   -y, --yes      聞かずに消す
+# rm は登録と worktree を消すが、会話ログ (~/.claude/projects) は残るので claude --resume <sessionId> で戻れる。
+# 未 push・未コミットのある worktree は claude rm 自身が拒むので、そのまま残る (消す指示は付けない)。
 #
 # 判定は下の jq の表 2 つで決まる。条件を足すときは表に 1 行足す。
 #   must  : 全部 ok なら候補。1 つでも外れたら対象外 (表示しない)
@@ -25,7 +28,7 @@ def doubt: [
 ];
 map(select([must[].ok] | all))
 | map(. + {doubts: [doubt[] | select(.hit) | .why]})
-| {stop: map(select(.doubts == [])), check: map(select(.doubts != []))}
+| {rm: map(select(.doubts == [])), check: map(select(.doubts != []))}
 '
 
 # startedAt (ミリ秒) 以降の Ken の入力を数える。
@@ -43,11 +46,12 @@ _ccx_sweep_inputs() {
 }
 
 _ccx_sweep() {
-  local yes=0
+  local mode=ask
   case "$1" in
-    "") ;;
-    -y|--yes) yes=1 ;;
-    *) echo "usage: ccx sweep [--yes]" >&2; return 1 ;;
+    "") [[ -t 0 ]] || mode=list ;;
+    -n|--dry-run) mode=list ;;
+    -y|--yes) mode=yes ;;
+    *) echo "usage: ccx sweep [-n|--dry-run] [-y|--yes]" >&2; return 1 ;;
   esac
 
   # 判定の材料を 1 セッション 1 行の JSON にする
@@ -67,17 +71,22 @@ _ccx_sweep() {
   local result
   result=$(printf '%s\n' $facts | jq -s "$_ccx_sweep_rules") || return 1
 
-  echo "止める候補:"
-  jq -r '.stop[] | "  \(.id)\t\(.name)\t\(.job.state // .state)\t\(.job.detail // "")"' <<<"$result"
+  echo "消す候補:"
+  jq -r '.rm[] | "  \(.id)\t\(.name)\t\(.job.state // .state)\t\(.job.detail // "")"' <<<"$result"
   echo "要確認 (候補に入れていない):"
   jq -r '.check[] | "  \(.id)\t\(.name)\t\(.doubts | join(" / "))\t\(.job.detail // "")"' <<<"$result"
 
-  local ids=(${(f)"$(jq -r '.stop[].id' <<<"$result")"})
+  local ids=(${(f)"$(jq -r '.rm[].id' <<<"$result")"})
   if (( ! $#ids )); then
-    echo "止める候補はありません"
-  elif (( yes )); then
-    local i; for i in $ids; do claude stop "$i"; done
-  else
-    echo "止めるには: ccx sweep --yes  (stop は会話を残す。戻すのは claude attach <id>)"
+    echo "消す候補はありません"
+    return 0
   fi
+  case $mode in
+    list) echo "消すには: ccx sweep  (会話ログは残る。戻すのは claude --resume <sessionId>)"; return 0 ;;
+    ask)
+      local ans
+      read -r "ans?$#ids 本を claude rm します。Enter で実行、それ以外で中止: "
+      [[ -z $ans ]] || { echo "中止しました"; return 0; } ;;
+  esac
+  local i; for i in $ids; do claude rm "$i"; done
 }
