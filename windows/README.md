@@ -21,7 +21,7 @@ powershell -ExecutionPolicy Bypass -File dotfiles\windows\install.ps1
 「git を入れる」から「Claude Code でスキルが有効になる」までを一本で通す:
 
 1. winget で Git / GitHub CLI / ghq / Node.js / fzf
-2. Discord（任意）
+2. Discord / LINE（それぞれ任意。LINE は Microsoft Store 版）
 3. `core.sshCommand` を Windows OpenSSH に向ける ── **非 ASCII のユーザ名では必須**。
    これが無いと、鍵も登録も正しいのに `publickey` 拒否になる
 4. ed25519 鍵の生成 → 公開鍵を表示 → 登録待ち → `ssh -T` で疎通確認

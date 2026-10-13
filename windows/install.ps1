@@ -140,6 +140,10 @@ Write-Host "==================================="
 if (Confirm-Step "Discord") {
     Install-WinGet 'Discord.Discord' $null 'Discord'
 }
+# LINE は winget の community source に無く、msstore にだけある (ID は Store の製品 ID)。
+if (Confirm-Step "LINE") {
+    Install-WinGet 'XPFCC4CD725961' $null 'LINE'
+}
 
 # -----------------------------------------------
 # Step 3: git config
