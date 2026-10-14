@@ -9,6 +9,12 @@ git clone git@github.com:ken-ty/dotfiles.git
 powershell -ExecutionPolicy Bypass -File dotfiles\windows\install.ps1
 ```
 
+**Claude デスクトップなど、MSIX アプリの中のシェルからは実行しない。** そこでは AppData と
+レジストリへの書き込みの一部がそのアプリ専用の領域に振り分けられ、winget で入れたアプリが
+外から壊れて見える (LINE がタスクバーからだけ「LINE app not found」になった)。
+install.ps1 は冒頭でこれを検知して止まる。スタートメニューから開いた PowerShell か
+Windows Terminal で実行する。
+
 ## 管理しているもの
 
 | ファイル名 | 説明 |
