@@ -29,6 +29,39 @@ if ($env:OS -ne 'Windows_NT') {
     exit 1
 }
 
+function Get-VirtualizingPackage {
+    # MSIX で配布されたデスクトップアプリ (Claude デスクトップなど) の中のシェルから
+    # 実行すると、AppData とレジストリへの書き込みの一部がそのパッケージ専用の領域に
+    # 振り分けられる。インストーラの書き込みがパッケージの外から見えなくなり、アプリが
+    # 壊れる (2026-10-14、LINE のランチャーがタスクバーからだけ「LINE app not found」
+    # になった)。プロセスにパッケージ ID が無くても振り分けは起きるので、ID ではなく
+    # 実際に書いてみて、Packages\<pkg>\LocalCache 側に現れるかで判定する。
+    # 振り分けられていれば、そのパッケージ名を返す。
+    $name = 'dotfiles-virt-probe-' + [guid]::NewGuid().ToString('N')
+    $dir  = Join-Path $env:LOCALAPPDATA $name
+    try {
+        New-Item -ItemType Directory -Path $dir -Force | Out-Null
+        $hit = Get-ChildItem (Join-Path $env:LOCALAPPDATA "Packages\*\LocalCache\Local\$name") -Directory -ErrorAction SilentlyContinue |
+               Select-Object -First 1
+        if ($hit) { return $hit.Parent.Parent.Parent.Name }
+        return $null
+    } finally {
+        # 振り分けられていても、同じ見え方のまま消せば振り分け先も消える
+        Remove-Item $dir -Recurse -Force -ErrorAction SilentlyContinue
+    }
+}
+
+$virtPkg = Get-VirtualizingPackage
+if ($virtPkg) {
+    Write-Host ""
+    Write-Host "  このシェルは $virtPkg の中で動いていて、AppData への書き込みが"
+    Write-Host "  そのパッケージ専用の領域に振り分けられています。ここで winget を走らせると、"
+    Write-Host "  入れたアプリが Claude などの外から壊れて見えます。"
+    Write-Host ""
+    Write-Host "  スタートメニューから PowerShell (または Windows Terminal) を開いて、そこで実行してください。"
+    exit 1
+}
+
 function Test-Has([string]$name) {
     return [bool](Get-Command $name -ErrorAction SilentlyContinue)
 }
