@@ -127,6 +127,7 @@ Install-WinGet 'GitHub.cli'    'gh'   'GitHub CLI'
 Install-WinGet 'x-motemen.ghq' 'ghq'  'ghq'
 Install-WinGet 'OpenJS.NodeJS' 'node' 'Node.js'
 Install-WinGet 'junegunn.fzf'  'fzf'  'fzf'
+Install-WinGet 'Bitwarden.CLI' 'bw'   'Bitwarden CLI'   # 秘密の正本は Bitwarden (bitwarden-secrets スキル)
 Sync-Path
 
 # -----------------------------------------------
@@ -143,6 +144,10 @@ if (Confirm-Step "Discord") {
 # LINE は winget の community source に無く、msstore にだけある (ID は Store の製品 ID)。
 if (Confirm-Step "LINE") {
     Install-WinGet 'XPFCC4CD725961' $null 'LINE'
+}
+# CLI (bw) は Step 1 で必ず入る。デスクトップアプリは任意 (macOS の mas と同じ分け方)。
+if (Confirm-Step "Bitwarden") {
+    Install-WinGet 'Bitwarden.Bitwarden' $null 'Bitwarden'
 }
 
 # -----------------------------------------------
