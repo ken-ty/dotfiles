@@ -25,7 +25,8 @@ def must: [
   {why: "指す手段がある (bg は id、それ以外は pid)", ok: (if .kind == "background" then .id != null else .pid != null end)}
 ];
 def doubt: [
-  {why: "needs (Ken への依頼) がある",    hit: ((.job.needs // "") != "")}
+  # 起こしただけのセッションは needs に "send a prompt to start" が入る。これは依頼ではないので除く
+  {why: "needs (Ken への依頼) がある",    hit: ((.job.needs // "") | . != "" and . != "send a prompt to start")}
 ];
 map(select([must[].ok] | all))
 | map(. + {doubts: [doubt[] | select(.hit) | .why]})
