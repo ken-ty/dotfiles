@@ -133,7 +133,7 @@ zsh のキーバインドは `.zshrc` に直書きせず、`zsh/keybindings.conf
 ```
 # key    widget               state  説明
 ^]       cd-ghq-list--fzf     on     ghq のリポジトリを fzf で選んで cd
-^K       cd-git-worktree--fzf on     今のリポジトリの worktree を fzf で選んで cd
+^G       cd-git-worktree--fzf on     今のリポジトリの worktree を fzf で選んで cd
 ^R       fzf-history-widget   on     fzf 付属: 履歴を fzf で検索
 ^T       fzf-file-widget      on     fzf 付属: ファイルを選んで挿入
 ```
