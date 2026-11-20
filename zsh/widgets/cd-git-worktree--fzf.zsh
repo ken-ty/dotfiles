@@ -1,5 +1,5 @@
 # ^G で今のリポジトリの worktree を fzf で曖昧検索して、選んだ worktree に cd する。
-# G は git。^] (cd-ghq-list--fzf) がリポジトリ間の移動、こちらはリポジトリ内の移動。
+# G は「go to …」(その worktree へ行く)。^] (cd-ghq-list--fzf) がリポジトリ間の移動、こちらはリポジトリ内の移動。
 function cd-git-worktree--fzf() {
   if ! command -v fzf >/dev/null 2>&1; then
     zle -M 'fzf が無い (brew install fzf)'   # 無言で画面が消える事故を防ぐ
