@@ -27,6 +27,14 @@
           "CHATWORK_API_TOKEN=$(security find-generic-password -a \"$USER\" -s CHATWORK_API_TOKEN -w) exec npx -y @chatwork/mcp-server"
         ]
       }
+    },
+    {
+      "name": "notion",
+      "note": "Notion 公式のリモート MCP。追加後、対話セッションの /mcp から一度だけブラウザで OAuth。",
+      "config": {
+        "type": "http",
+        "url": "https://mcp.notion.com/mcp"
+      }
     }
   ],
 
@@ -39,7 +47,6 @@
       "切れたときの復旧は  claude mcp login '<name>'  か claude.ai のコネクタ設定。"
     ],
     "names": [
-      "claude.ai Notion",
       "claude.ai Gmail",
       "claude.ai Slack",
       "claude.ai Google Drive",

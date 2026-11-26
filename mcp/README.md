@@ -27,12 +27,20 @@ MCP には性質の違う 2 種類があり、**片方しか repo で管理で�
 **① stdio / http (`user`, `project`)**
 実体は「コマンド + 引数 + env」または URL だけ。完全に宣言できるので `install.sh` が自動配線します。
 
+Notion はここに入ります。claude.ai コネクタではなく、公式のリモート MCP (`https://mcp.notion.com/mcp`) を
+user スコープの http で繋いでいます。mini も mbp もこの形です。
+URL は宣言できますが、OAuth はマシンごとなので、`install.sh` で追加したあと対話セッションで一度だけ通します:
+
+```
+/mcp   →  notion を選んで Authenticate
+```
+
 **② claude.ai コネクタ (`connectors`)**
-Notion / Gmail / Slack / Drive / Calendar。**実体は OAuth トークン**なので設定からは復元できません。
+Gmail / Slack / Drive / Calendar。**実体は claude.ai アカウント側の OAuth トークン**なので設定からは復元できません。
 `install.sh` は接続済みかを確認してチェックリストを出すだけです。切れていたら対話セッションで:
 
 ```bash
-claude mcp login 'claude.ai Notion'
+claude mcp login 'claude.ai Gmail'
 ```
 
 ## 秘密の扱い

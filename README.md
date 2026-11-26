@@ -88,7 +88,10 @@ bash mcp/install.sh
 bash mcp/doctor.sh
 ```
 
-`claude.ai` のコネクタ（Notion / Gmail / Slack / …）は **OAuth トークンが実体なので
+Notion は claude.ai コネクタではなく、user スコープの http (`https://mcp.notion.com/mcp`) として
+`install.sh` が追加します。OAuth はマシンごとに一度、対話セッションの `/mcp` で通します。
+
+`claude.ai` のコネクタ（Gmail / Slack / …）は **OAuth トークンが実体なので
 設定からは復元できません**。`install.sh` はチェックリストを出すだけで、認証は手動です。
 
 詳細は [`mcp/README.md`](mcp/README.md)。

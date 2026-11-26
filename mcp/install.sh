@@ -5,7 +5,7 @@
 # servers.json の宣言どおりに Claude Code の MCP サーバを配線します。
 # 冪等です。既にあるサーバには触りません。
 #
-# claude.ai コネクタ (Notion / Gmail / Slack / …) は OAuth トークンが実体なので
+# claude.ai コネクタ (Gmail / Slack / …) は OAuth トークンが実体なので
 # 設定からは復元できません。チェックリストとして表示するだけです。
 
 set -eu
