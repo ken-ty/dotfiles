@@ -27,13 +27,39 @@ MCP には性質の違う 2 種類があり、**片方しか repo で管理で�
 **① stdio / http (`user`, `project`)**
 実体は「コマンド + 引数 + env」または URL だけ。完全に宣言できるので `install.sh` が自動配線します。
 
+**Notion はこちら。** claude.ai コネクタではなく、公式のリモート MCP (`https://mcp.notion.com/mcp`)
+を Claude Code に直接つないでいます。配線は `install.sh` がやり、OAuth だけ初回に手で通します
+(下の「OAuth が要る http サーバ」)。
+
 **② claude.ai コネクタ (`connectors`)**
-Notion / Gmail / Slack / Drive / Calendar。**実体は OAuth トークン**なので設定からは復元できません。
+claude.ai アカウントに付くコネクタ。**実体は OAuth トークン**なので設定からは復元できません。
 `install.sh` は接続済みかを確認してチェックリストを出すだけです。切れていたら対話セッションで:
 
 ```bash
-claude mcp login 'claude.ai Notion'
+claude mcp login '<name>'
 ```
+
+## OAuth が要る http サーバ
+
+`notion` のように、ヘッダに秘密を書かず OAuth で認証する http サーバは宣言できます。
+トークンは Claude Code が持つので repo にも `~/.claude.json` にも秘密が載りません。
+`install.sh` で配線したあと、対話セッションで一度だけ認証します:
+
+```bash
+claude      # 起動して /mcp → notion → Authenticate
+```
+
+### ssh 越しに認証する
+
+承認後、ブラウザは**その機械の** `http://localhost:<port>/callback?code=...` へ戻ります。
+ssh 先の機械 (Mac mini など) で認証すると、手元のブラウザからは届かずエラーページになります。
+**そのエラーページの URL を丸ごとコピーし、ssh 先で叩けば通ります** (2026-11-27 に mini で実測):
+
+```bash
+curl 'http://localhost:<port>/callback?code=...&state=...'
+```
+
+手元が Mac なら `ssh -L <port>:localhost:<port> <host>` で転送してから承認しても同じです。
 
 ## 秘密の扱い
 
