@@ -5,7 +5,7 @@
 # servers.json の宣言どおりに Claude Code の MCP サーバを配線します。
 # 冪等です。既にあるサーバには触りません。
 #
-# claude.ai コネクタ (Notion / Gmail / Slack / …) は OAuth トークンが実体なので
+# claude.ai コネクタは OAuth トークンが実体なので
 # 設定からは復元できません。チェックリストとして表示するだけです。
 
 set -eu
@@ -75,6 +75,10 @@ while IFS= read -r entry; do
     config=$(jq -c --arg home "$HOME" '.config | walk(if type == "string" then gsub("\\$HOME"; $home) else . end)' <<< "$entry")
     claude mcp add-json "$name" "$config" --scope user > /dev/null
     echo "  + $name (追加)"
+    # http は OAuth が要ることが多い。トークンは設定から作れないので案内だけ出す
+    if [ "$(jq -r '.type' <<< "$config")" = "http" ]; then
+        echo "      → 初回は対話セッションの /mcp で認証 (ssh 越しは mcp/README.md)"
+    fi
     added=$((added + 1))
 done < <(jq -c '.user[]' "$SERVERS_JSON")
 

@@ -43,10 +43,16 @@ report() {
 here=$(list_servers)
 
 echo "== user スコープ =="
-while IFS= read -r name; do
-    [ -z "$name" ] && continue
+while IFS= read -r entry; do
+    name=$(jq -r '.name' <<< "$entry")
+    requires=$(jq -r 'select(.optional == true) | .requires_file // empty' <<< "$entry")
+    # install.sh と同じく、実体の無い任意サーバは数えない
+    if [ -n "$requires" ] && [ ! -e "$(expand_home "$requires")" ]; then
+        echo "  SKIP     $name (実体が無い: $requires)"
+        continue
+    fi
     report "$name" "$here"
-done < <(jq -r '.user[].name' "$SERVERS_JSON")
+done < <(jq -c '.user[]' "$SERVERS_JSON")
 
 echo "== project スコープ =="
 while IFS= read -r entry; do
